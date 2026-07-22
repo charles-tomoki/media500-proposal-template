@@ -984,36 +984,26 @@ body {
 /* ============================================
    SCROLL REVEAL
    ============================================ */
-.reveal-up {
+.reveal-up, .reveal-scale {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
     transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
 }
-.reveal-up.revealed {
+.reveal-up.revealed, .reveal-scale.revealed {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
 }
-.reveal-scale {
-    opacity: 1;
-    transform: scale(1);
-    transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
-}
-.reveal-scale.revealed {
-    opacity: 1;
-    transform: scale(1);
-}
-/* Animate on first scroll if JS enabled */
-.js-enabled .reveal-up {
+.js-enabled .reveal-up:not(.revealed) {
     opacity: 0;
     transform: translateY(30px);
+}
+.js-enabled .reveal-scale:not(.revealed) {
+    opacity: 0;
+    transform: scale(0.95);
 }
 .js-enabled .reveal-up.revealed {
     opacity: 1;
     transform: translateY(0);
-}
-.js-enabled .reveal-scale {
-    opacity: 0;
-    transform: scale(0.95);
 }
 .js-enabled .reveal-scale.revealed {
     opacity: 1;
