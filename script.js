@@ -44,8 +44,6 @@
     // ============================================
     const state = {
         cliente: '',
-        email: 'comercial@media500.com',
-        tel: '+54 11 XXXX-XXXX',
         logo: null,
         fotoTrenes: null,
         fotoTrenesPyV: null,
@@ -65,6 +63,8 @@
         showLed: true,
         showTotems: true,
         showOtros: true,
+        showFormatos: true,
+        showDatos: true,
         cotItems: []
     };
 
@@ -180,8 +180,6 @@
     // ============================================
     const view = {
         clientNameDisplay: document.getElementById('clientNameDisplay'),
-        emailDisplay: document.getElementById('emailDisplay'),
-        telDisplay: document.getElementById('telDisplay'),
         clientLogoNav: document.getElementById('clientLogoNav'),
         imgTrenes: document.getElementById('imgTrenes'),
         imgTrenesPyV: document.getElementById('imgTrenesPyV'),
@@ -192,13 +190,17 @@
         imgLed: document.getElementById('imgLed'),
         imgTotems: document.getElementById('imgTotems'),
         imgOtros: document.getElementById('imgOtros'),
+        formatosSection: document.getElementById('formatos'),
         cotizacionSection: document.getElementById('cotizacion'),
         cotTableBody: document.getElementById('cotTableBody'),
         cotTableFoot: document.getElementById('cotTableFoot'),
         mockupSection: document.getElementById('mockups'),
         coberturaSection: document.getElementById('cobertura'),
+        datosSection: document.getElementById('datos'),
+        navFormatos: document.querySelector('a[href="#formatos"]'),
         navCotizacion: document.getElementById('navCotizacion'),
         navMockups: document.getElementById('navMockups'),
+        navDatos: document.getElementById('navDatos'),
         cotNumber: document.getElementById('cotNumber'),
         mockNumber: document.getElementById('mockNumber'),
         ledNumber: document.getElementById('ledNumber'),
@@ -223,8 +225,6 @@
     function updateView() {
         // Text
         if (view.clientNameDisplay) view.clientNameDisplay.textContent = state.cliente || '[NOMBRE DEL CLIENTE]';
-        if (view.emailDisplay) view.emailDisplay.textContent = state.email;
-        if (view.telDisplay) view.telDisplay.textContent = state.tel;
 
         // Logo
         if (view.clientLogoNav) {
@@ -310,12 +310,23 @@
         const showLedSection = state.showLed && state.fotoLed;
         if (view.coberturaSection) view.coberturaSection.classList.toggle('hidden', !showLedSection);
 
+        // Formatos section visibility
+        const showFormatos = state.showFormatos;
+        if (view.formatosSection) view.formatosSection.classList.toggle('hidden', !showFormatos);
+        if (view.navFormatos) view.navFormatos.classList.toggle('hidden', !showFormatos);
+
+        // Datos section visibility
+        const showDatos = state.showDatos;
+        if (view.datosSection) view.datosSection.classList.toggle('hidden', !showDatos);
+        if (view.navDatos) view.navDatos.classList.toggle('hidden', !showDatos);
+
         // Dynamic numbering
-        let num = 3;
+        let num = 2;
+        if (showFormatos) { num++; }
         if (hasCot) { if (view.cotNumber) view.cotNumber.textContent = String(num).padStart(2, '0'); num++; }
         if (anyMockups) { if (view.mockNumber) view.mockNumber.textContent = String(num).padStart(2, '0'); num++; }
         if (showLed) { if (view.ledNumber) view.ledNumber.textContent = String(num).padStart(2, '0'); num++; }
-        if (view.datosNumber) view.datosNumber.textContent = String(num).padStart(2, '0');
+        if (showDatos) { if (view.datosNumber) view.datosNumber.textContent = String(num).padStart(2, '0'); num++; }
     }
 
     // ============================================
@@ -325,8 +336,6 @@
         uploadLogo: document.getElementById('uploadLogo'),
         previewLogo: document.getElementById('previewLogo'),
         inputCliente: document.getElementById('inputCliente'),
-        inputEmail: document.getElementById('inputEmail'),
-        inputTel: document.getElementById('inputTel'),
         uploadTrenes: document.getElementById('uploadTrenes'),
         previewTrenes: document.getElementById('previewTrenes'),
         toggleTrenes: document.getElementById('toggleTrenes'),
@@ -354,6 +363,8 @@
         uploadOtros: document.getElementById('uploadOtros'),
         previewOtros: document.getElementById('previewOtros'),
         toggleOtros: document.getElementById('toggleOtros'),
+        toggleFormatos: document.getElementById('toggleFormatos'),
+        toggleDatos: document.getElementById('toggleDatos'),
         btnCloseEditor: document.getElementById('btnCloseEditor'),
         btnOpenEditor: document.getElementById('btnOpenEditor'),
         btnPreview: document.getElementById('btnPreview'),
@@ -413,7 +424,7 @@
         const clientName = state.cliente || '[NOMBRE DEL CLIENTE]';
         const logoHTML = state.logo ? `<img id="clientLogoNav" class="client-logo-nav" src="${state.logo}" alt="Logo">` : '';
 
-        // Cotización
+        // Cotización (solo items cotizados)
         let cotHTML = '';
         if (state.cotItems.length > 0) {
             let sumExh = 0, sumProd = 0;
@@ -422,11 +433,11 @@
                 sumProd += item.totalProd;
                 return `<tr><td>${item.cantidad}</td><td>${item.formato}${item.meses > 1 ? ' (' + item.meses + ' meses)' : ''}</td><td class="num">${formatMoney(item.puExh)}</td><td class="num">${item.puProd ? formatMoney(item.puProd) : '—'}</td><td class="num">${formatMoney(item.totalExh)}</td><td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td></tr>`;
             }).join('');
-
+            const cotNum = state.showFormatos ? '03' : '02';
             cotHTML = `
             <section id="cotizacion" class="cotizacion-section">
                 <div class="section-wrapper">
-                    <div class="section-header"><span class="section-number">03</span><h2 class="section-title">Cotización</h2><p class="section-subtitle">Propuesta económica personalizada</p></div>
+                    <div class="section-header"><span class="section-number">${cotNum}</span><h2 class="section-title">Cotización</h2><p class="section-subtitle">Propuesta económica personalizada</p></div>
                     <div class="cot-table-wrapper">
                         <table class="cot-table">
                             <thead><tr><th>Cant.</th><th>Formato</th><th class="num">P.U. Exhibición</th><th class="num">P.U. Producción</th><th class="num">Total Exhibición</th><th class="num">Total Producción</th></tr></thead>
@@ -469,28 +480,82 @@
         if (state.showOtros && state.fotoOtros) {
             mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoOtros}" alt="Otros formatos"><div class="mockup-overlay"><span class="mockup-tag">Otros formatos</span></div></div><p class="mockup-caption">Back full y formatos especiales</p></div>`;
         }
-        if (mockItems) {
-            const mockNum = cotHTML ? '04' : '03';
-            mockupsHTML = `
+
+        let num = 2;
+        if (state.showFormatos) num++;
+        const hasCot = state.cotItems.length > 0;
+        if (hasCot) { const cotNum = String(num).padStart(2,'0'); num++; }
+        if (mockItems) { const mockNum = String(num).padStart(2,'0'); mockupsHTML = `
             <section id="mockups" class="mockup-section">
                 <div class="section-wrapper">
                     <div class="mockup-header"><span class="section-number">${mockNum}</span><h2 class="section-title">Así se vería tu campaña</h2><p class="section-subtitle">Mockups de referencia para visualizar el impacto</p></div>
                     <div class="mockup-grid">${mockItems}</div>
                 </div>
             </section>`;
+        num++; }
+
+        // Formatos section (conditional, visible solo si hay cotización o si showFormatos=true)
+        // En standalone, mostramos formatos solo si showFormatos está activado
+        let formatosHTML = '';
+        if (state.showFormatos) {
+            const trenesRows = TARIFARIO.trenes.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
+            const colectivosRows = TARIFARIO.colectivos.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
+            const formatosNum = '02';
+            formatosHTML = `
+            <section id="formatos" class="formatos">
+                <div class="section-wrapper">
+                    <div class="section-header"><span class="section-number">${formatosNum}</span><h2 class="section-title">Formatos disponibles</h2><p class="section-subtitle">Desde una cenefa hasta una formación completa ploteada</p></div>
+                    <div class="formatos-content">
+                        <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚆 Trenes</h3>
+                        <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${trenesRows}</tbody></table></div>
+                        <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+                        <br><br>
+                        <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚌 Colectivos</h3>
+                        <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${colectivosRows}</tbody></table></div>
+                        <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+                    </div>
+                </div>
+            </section>`;
         }
 
-        // LED (legacy section — kept for backwards compatibility, now merged into gallery)
-        let ledHTML = '';
+        // Datos section
+        let datosHTML = '';
+        if (state.showDatos) {
+            datosHTML = `
+            <section id="datos" class="datos">
+                <div class="section-wrapper">
+                    <div class="section-header"><span class="section-number">${String(num).padStart(2,'0')}</span><h2 class="section-title">Datos que respaldan la inversión</h2><p class="section-subtitle">Números oficiales del Ministerio de Transporte</p></div>
+                    <div class="datos-grid">
+                        <div class="dato-card"><div class="dato-number">175.9M</div><div class="dato-label">pasajeros/año Línea Roca</div><div class="dato-context">~482.000 pasajeros por día. 75 estaciones. 198 km.</div></div>
+                        <div class="dato-card"><div class="dato-number">17.5M</div><div class="dato-label">pasajeros/año Línea Belgrano Sur</div><div class="dato-context">~47.900 pasajeros por día. Dwell time de 70-77 min.</div></div>
+                        <div class="dato-card"><div class="dato-number">6-9</div><div class="dato-label">horas pico mañana</div><div class="dato-context">Y 17-20 hs tarde. Frecuencia cada 8-15 min en pico.</div></div>
+                        <div class="dato-card"><div class="dato-number">40-77</div><div class="dato-label">minutos de exposición</div><div class="dato-context">Dwell time promedio por pasajero.</div></div>
+                    </div>
+                </div>
+            </section>`;
+            num++;
+        }
 
-        // Tablas formatos
-        const trenesRows = TARIFARIO.trenes.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
-        const colectivosRows = TARIFARIO.colectivos.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
-
-        // Datos number
-        let datosNum = 3;
-        if (cotHTML) datosNum++;
-        if (mockupsHTML) datosNum++;
+        // Términos section
+        let terminosHTML = '';
+        terminosHTML = `
+        <section id="terminos" class="terminos-section">
+            <div class="section-wrapper">
+                <div class="terminos-content">
+                    <h2 class="terminos-title">TÉRMINOS Y CONDICIONES GENERALES</h2>
+                    <div class="terminos-body">
+                        <p>Las unidades ofrecidas están sujetas a disponibilidad en el momento del envío de la orden publicitaria para efectivizar la contratación.</p>
+                        <p>Sin otro particular y deseando contar con ustedes, estaremos a su disposición para cualquier aclaración que estimen conveniente.</p>
+                    </div>
+                    <div class="terminos-firma">
+                        <p class="firma-line">Saludos Cordiales</p>
+                        <p class="firma-empresa">MEDIA 500 S.A.</p>
+                        <p class="firma-nombre">JUANA STRICKLAND</p>
+                        <p class="firma-cargo">APODERADA</p>
+                    </div>
+                </div>
+            </div>
+        </section>`;
 
         return `<!DOCTYPE html>
 <html lang="es">
@@ -518,58 +583,26 @@ ${getEmbeddedCSS()}
             <h1 class="hero-title"><span class="title-line">Tu marca en el</span><span class="title-line highlight">camino de millones</span></h1>
             <p class="hero-subtitle">Publicidad OOH en trenes y colectivos de Buenos Aires. Alcance masivo, visibilidad constante, impacto medible.</p>
             <div class="hero-client"><span class="client-label">Propuesta preparada para:</span><span class="client-name">${clientName}</span></div>
-            <div class="hero-actions"><a href="#formatos" class="btn btn-primary"><span>Ver formatos</span> →</a></div>
-        </div>
-        <div class="hero-visual">
-            <div class="stats-card"><div class="sc-number">530.000</div><div class="sc-label">pasajeros/día en trenes</div></div>
-            <div class="stats-card"><div class="sc-number">80</div><div class="sc-label">líneas de colectivos</div></div>
-            <div class="stats-card"><div class="sc-number">2</div><div class="sc-label">líneas de trenes</div></div>
         </div>
     </div>
 </section>
 
 <section id="oportunidad" class="oportunidad">
     <div class="section-wrapper">
-        <div class="section-header"><span class="section-number">01</span><h2 class="section-title">¿Por qué OOH en transporte público?</h2><p class="section-subtitle">El medio que no se puede bloquear, saltear ni silenciar</p></div>
+        <div class="section-header"><span class="section-number">01</span><h2 class="section-title">¿Por qué Media 500?</h2><p class="section-subtitle">El medio que no se puede bloquear, saltear ni silenciar</p></div>
         <div class="cards-grid">
-            <div class="info-card"><div class="card-icon">◎</div><h3>Alcance Masivo</h3><p>Más de <strong>530.000 pasajeros diarios</strong> en trenes Belgrano Sur y Roca.</p></div>
-            <div class="info-card"><div class="card-icon">◈</div><h3>Exposición Constante</h3><p>Presencia continua. El pasajero ve tu mensaje <strong>múltiples veces por semana</strong>.</p></div>
-            <div class="info-card"><div class="card-icon">◎</div><h3>Alta Visibilidad</h3><p>Ubicaciones estratégicas en zonas de alto tránsito.</p></div>
-            <div class="info-card"><div class="card-icon">☺</div><h3>Audiencia en Movimiento</h3><p>Pasajeros, peatones y conductores expuestos al mensaje.</p></div>
+            <div class="info-card"><div class="card-icon">◎</div><h3>Visión Clara</h3><p>Diseñamos campañas que impactan y resuenan con tu público objetivo en constante movimiento.</p></div>
+            <div class="info-card"><div class="card-icon">◈</div><h3>Compromiso Total</h3><p>Trabajamos de cerca con vos, desde la idea inicial hasta la implementación y seguimiento.</p></div>
+            <div class="info-card"><div class="card-icon">◎</div><h3>Innovación</h3><p>Utilizamos tecnología y creatividad para maximizar el alcance y la efectividad de tu publicidad.</p></div>
         </div>
     </div>
 </section>
 
-<section id="formatos" class="formatos">
-    <div class="section-wrapper">
-        <div class="section-header"><span class="section-number">02</span><h2 class="section-title">Formatos disponibles</h2><p class="section-subtitle">Desde una cenefa hasta una formación completa ploteada</p></div>
-        <div class="formatos-content">
-            <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚆 Trenes</h3>
-            <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${trenesRows}</tbody></table></div>
-            <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
-            <br><br>
-            <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚌 Colectivos</h3>
-            <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${colectivosRows}</tbody></table></div>
-            <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
-        </div>
-    </div>
-</section>
-
+${formatosHTML}
 ${cotHTML}
 ${mockupsHTML}
-${ledHTML}
-
-<section id="datos" class="datos">
-    <div class="section-wrapper">
-        <div class="section-header"><span class="section-number">${String(datosNum).padStart(2,'0')}</span><h2 class="section-title">Datos que respaldan la inversión</h2><p class="section-subtitle">Números oficiales del Ministerio de Transporte</p></div>
-        <div class="datos-grid">
-            <div class="dato-card"><div class="dato-number">175.9M</div><div class="dato-label">pasajeros/año Línea Roca</div><div class="dato-context">~482.000 pasajeros por día. 75 estaciones. 198 km.</div></div>
-            <div class="dato-card"><div class="dato-number">17.5M</div><div class="dato-label">pasajeros/año Línea Belgrano Sur</div><div class="dato-context">~47.900 pasajeros por día. Dwell time de 70-77 min.</div></div>
-            <div class="dato-card"><div class="dato-number">6-9</div><div class="dato-label">horas pico mañana</div><div class="dato-context">Y 17-20 hs tarde. Frecuencia cada 8-15 min en pico.</div></div>
-            <div class="dato-card"><div class="dato-number">40-77</div><div class="dato-label">minutos de exposición</div><div class="dato-context">Dwell time promedio por pasajero.</div></div>
-        </div>
-    </div>
-</section>
+${datosHTML}
+${terminosHTML}
 
 <section id="contacto" class="contacto">
     <div class="section-wrapper">
@@ -577,8 +610,6 @@ ${ledHTML}
             <h2 class="contacto-title">¿Listo para mover tu marca?</h2>
             <p class="contacto-subtitle">Contactanos y armamos una propuesta a medida</p>
             <div class="contacto-grid">
-                <div class="contacto-item"><div class="contacto-icon">✉</div><span class="contacto-label">Email</span><span class="contacto-value">${state.email}</span></div>
-                <div class="contacto-item"><div class="contacto-icon">☎</div><span class="contacto-label">Teléfono</span><span class="contacto-value">${state.tel}</span></div>
                 <div class="contacto-item"><div class="contacto-icon">◎</div><span class="contacto-label">Oficina</span><span class="contacto-value">Buenos Aires, Argentina</span></div>
             </div>
         </div>

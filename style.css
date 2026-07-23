@@ -261,7 +261,7 @@ body:not(.editor-closed) #proposalView {
     letter-spacing: -0.02em;
 }
 .client-logo-nav {
-    height: 32px;
+    height: 52px;
     width: auto;
     object-fit: contain;
     margin-left: 12px;
@@ -840,6 +840,69 @@ body:not(.editor-closed) #proposalView {
     color: var(--gray-400);
 }
 .contacto-value { font-size: 1rem; font-weight: 600; color: var(--navy); }
+
+
+/* ============================================
+   TÉRMINOS Y CONDICIONES
+   ============================================ */
+.terminos-section {
+    padding: var(--section-padding) 0 40px;
+    background: var(--white);
+    border-top: 1px solid var(--gray-200);
+}
+.terminos-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 32px;
+}
+.terminos-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    text-align: left;
+}
+.terminos-body {
+    font-size: 0.95rem;
+    color: var(--gray-700);
+    line-height: 1.8;
+    margin-bottom: 48px;
+}
+.terminos-body p {
+    margin-bottom: 16px;
+}
+.terminos-firma {
+    text-align: left;
+    border-top: 1px solid var(--gray-200);
+    padding-top: 32px;
+}
+.firma-line {
+    font-size: 0.9rem;
+    color: var(--gray-600);
+    margin-bottom: 24px;
+}
+.firma-empresa {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+.firma-nombre {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 2px;
+}
+.firma-cargo {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
 /* ============================================
    FOOTER
