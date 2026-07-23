@@ -641,16 +641,12 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
     }
 
     // ============================================
-    // TABS
+    // INIT
     // ============================================
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-        });
-    });
+    renderFormatoTables();
+    populateDropdown();
+    initParticles();
+    updateView();
 
     // ============================================
     // SCROLL REVEAL

@@ -221,19 +221,33 @@
             <h2 class="section-title">Formatos disponibles</h2>
             <p class="section-subtitle">Desde una cenefa hasta una formación completa ploteada</p>
         </div>
-        <div class="formatos-tabs">
-            <button class="tab-btn active" data-tab="trenes">🚆 Trenes</button>
-            <button class="tab-btn" data-tab="colectivos">🚌 Colectivos</button>
+
+        <!-- TRENES -->
+        <div class="formato-grupo reveal-up">
+            <h3 class="formato-grupo-title">🚆 Trenes</h3>
+            <div class="formato-table-wrapper">
+                <table class="formato-table">
+                    <thead>
+                        <tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr>
+                    </thead>
+                    <tbody id="tablaTrenes"></tbody>
+                </table>
+            </div>
+            <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
         </div>
-        <div class="formatos-content">
-            <div class="tab-panel active" id="panel-trenes">
-                <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody id="tablaTrenes"></tbody></table></div>
-                <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+
+        <!-- COLECTIVOS -->
+        <div class="formato-grupo reveal-up">
+            <h3 class="formato-grupo-title">🚌 Colectivos</h3>
+            <div class="formato-table-wrapper">
+                <table class="formato-table">
+                    <thead>
+                        <tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr>
+                    </thead>
+                    <tbody id="tablaColectivos"></tbody>
+                </table>
             </div>
-            <div class="tab-panel" id="panel-colectivos">
-                <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody id="tablaColectivos"></tbody></table></div>
-                <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
-            </div>
+            <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
         </div>
     </div>
 </section>
