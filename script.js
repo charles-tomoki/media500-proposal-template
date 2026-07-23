@@ -50,6 +50,7 @@
     50|    50|        fotoTrenesCenefas: null,
     51|    51|        fotoColectivos: null,
     52|    52|        fotoColectivosDif: null,
+    52|    52|        fotoColectivosPan: null,
     53|    53|        fotoColectivosInt: null,
     54|    54|        fotoLed: null,
     55|    55|        fotoTotems: null,
@@ -59,6 +60,7 @@
     59|    59|        showTrenesCenefas: true,
     60|    60|        showColectivos: true,
     61|    61|        showColectivosDif: true,
+    61|    61|        showColectivosPan: true,
     62|    62|        showColectivosInt: true,
     63|    63|        showLed: true,
     64|    64|        showTotems: true,
@@ -281,10 +283,11 @@
    279|   279|            if (type === 'trenes') show = state.showTrenes && state.fotoTrenes;
    280|   280|            if (type === 'trenesPyV') show = state.showTrenesPyV && state.fotoTrenesPyV;
    281|   281|            if (type === 'trenesCenefas') show = state.showTrenesCenefas && state.fotoTrenesCenefas;
-   282|   282|            if (type === 'colectivos') show = state.showColectivos && state.fotoColectivos;
-   283|   283|            if (type === 'colectivosDif') show = state.showColectivosDif && state.fotoColectivosDif;
-   284|   284|            if (type === 'colectivosInt') show = state.showColectivosInt && state.fotoColectivosInt;
-   285|   285|            if (type === 'led') show = state.showLed && state.fotoLed;
+   if (type === 'colectivos') show = state.showColectivos && state.fotoColectivos;
+   if (type === 'colectivosDif') show = state.showColectivosDif && state.fotoColectivosDif;
+   if (type === 'colectivosPan') show = state.showColectivosPan && state.fotoColectivosPan;
+   if (type === 'colectivosInt') show = state.showColectivosInt && state.fotoColectivosInt;
+   if (type === 'led') show = state.showLed && state.fotoLed;
    286|   286|            if (type === 'totems') show = state.showTotems && state.fotoTotems;
    287|   287|            if (type === 'otros') show = state.showOtros && state.fotoOtros;
    288|   288|            item.classList.toggle('hidden', !show);
@@ -384,6 +387,9 @@
    378|   378|    if (els.uploadColectivosDif) els.uploadColectivosDif.addEventListener('change', async (e) => { state.fotoColectivosDif = await readFile(e.target.files[0]); setPreview(els.previewColectivosDif, state.fotoColectivosDif); updateView(); });
    379|   379|    if (els.toggleColectivosDif) els.toggleColectivosDif.addEventListener('change', (e) => { state.showColectivosDif = e.target.checked; updateView(); });
    380|   380|
+   381|   381|    if (els.uploadColectivosPan) els.uploadColectivosPan.addEventListener('change', async (e) => { state.fotoColectivosPan = await readFile(e.target.files[0]); setPreview(els.previewColectivosPan, state.fotoColectivosPan); updateView(); });
+   381|   381|    if (els.toggleColectivosPan) els.toggleColectivosPan.addEventListener('change', (e) => { state.showColectivosPan = e.target.checked; updateView(); });
+   381|   381|
    381|   381|    if (els.uploadColectivosInt) els.uploadColectivosInt.addEventListener('change', async (e) => { state.fotoColectivosInt = await readFile(e.target.files[0]); setPreview(els.previewColectivosInt, state.fotoColectivosInt); updateView(); });
    382|   382|    if (els.toggleColectivosInt) els.toggleColectivosInt.addEventListener('change', (e) => { state.showColectivosInt = e.target.checked; updateView(); });
    383|   383|
@@ -458,9 +464,12 @@
    452|   452|        if (state.showColectivos && state.fotoColectivos) {
    453|   453|            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivos}" alt="Luneta premium"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Luneta</span></div></div><p class="mockup-caption">Luneta premium en unidades</p></div>`;
    454|   454|        }
-   455|   455|        if (state.showColectivosDif && state.fotoColectivosDif) {
-   456|   456|            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosDif}" alt="Diferencial colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Diferencial</span></div></div><p class="mockup-caption">Formato diferencial / panorámico</p></div>`;
-   457|   457|        }
+        if (state.showColectivosDif && state.fotoColectivosDif) {
+            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosDif}" alt="Diferencial colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Diferencial</span></div></div><p class="mockup-caption">Formato diferencial</p></div>`;
+        }
+        if (state.showColectivosPan && state.fotoColectivosPan) {
+            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosPan}" alt="Panorámico colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Panorámico</span></div></div><p class="mockup-caption">Panorámico (ventanas + luneta)</p></div>`;
+        }
    458|   458|        if (state.showColectivosInt && state.fotoColectivosInt) {
    459|   459|            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosInt}" alt="Interior colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Interior</span></div></div><p class="mockup-caption">Cenefas y publicidad interior</p></div>`;
    460|   460|        }
