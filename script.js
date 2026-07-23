@@ -153,39 +153,41 @@
 
 
     // ============================================
-    // EDITOR DE PRECIOS PERSONALIZADOS
+    // EDITOR DE PRECIOS INLINE (TABLAS EDITABLES)
     // ============================================
     function renderPreciosEditor() {
-        const panelTrenes = document.getElementById('preciosTrenes');
-        const panelColectivos = document.getElementById('preciosColectivos');
-        if (!panelTrenes || !panelColectivos) return;
+        const tbodyTrenes = document.getElementById('editorTablaTrenesBody');
+        const tbodyColectivos = document.getElementById('editorTablaColectivosBody');
+        if (!tbodyTrenes || !tbodyColectivos) return;
 
-        function buildRows(arr, cat) {
+        function buildTableBody(arr, cat) {
             return arr.map((f, i) => {
                 const custom = state.customPrices[cat][i] || {};
                 const exhVal = custom.exhibicion !== undefined ? custom.exhibicion : '';
                 const prodVal = custom.produccion !== undefined ? custom.produccion : '';
-                const exhClass = exhVal !== '' ? 'precio-input-modified' : 'precio-input-default';
-                const prodClass = prodVal !== '' ? 'precio-input-modified' : 'precio-input-default';
+                const exhClass = exhVal !== '' ? 'modified' : '';
+                const prodClass = prodVal !== '' ? 'modified' : '';
+                const exhPlaceholder = f.exhibicion.toLocaleString('es-AR');
+                const prodPlaceholder = f.produccion ? f.produccion.toLocaleString('es-AR') : '—';
                 return `
-                    <div class="precio-row">
-                        <span class="precio-label">${f.nombre}</span>
-                        <div class="precio-input-wrap">
-                            <input type="number" class="precio-input ${exhClass}" data-cat="${cat}" data-idx="${i}" data-tipo="exhibicion" placeholder="${f.exhibicion.toLocaleString('es-AR')}" value="${exhVal}">
-                        </div>
-                        <div class="precio-input-wrap">
-                            <input type="number" class="precio-input ${prodClass}" data-cat="${cat}" data-idx="${i}" data-tipo="produccion" placeholder="${f.produccion ? f.produccion.toLocaleString('es-AR') : '—'}" value="${prodVal}">
-                        </div>
-                    </div>
+                    <tr>
+                        <td>${f.nombre}</td>
+                        <td class="num">
+                            <input type="number" class="editor-precio-input ${exhClass}" data-cat="${cat}" data-idx="${i}" data-tipo="exhibicion" placeholder="${exhPlaceholder}" value="${exhVal}">
+                        </td>
+                        <td class="num">
+                            <input type="number" class="editor-precio-input ${prodClass}" data-cat="${cat}" data-idx="${i}" data-tipo="produccion" placeholder="${prodPlaceholder}" value="${prodVal}">
+                        </td>
+                    </tr>
                 `;
             }).join('');
         }
 
-        panelTrenes.innerHTML = buildRows(TARIFARIO.trenes, 'trenes');
-        panelColectivos.innerHTML = buildRows(TARIFARIO.colectivos, 'colectivos');
+        tbodyTrenes.innerHTML = buildTableBody(TARIFARIO.trenes, 'trenes');
+        tbodyColectivos.innerHTML = buildTableBody(TARIFARIO.colectivos, 'colectivos');
 
-        // Attach listeners
-        document.querySelectorAll('.precio-input').forEach(input => {
+        // Attach listeners a inputs de precio
+        document.querySelectorAll('.editor-precio-input').forEach(input => {
             input.addEventListener('change', (e) => {
                 const cat = e.target.dataset.cat;
                 const idx = parseInt(e.target.dataset.idx);
@@ -194,12 +196,10 @@
                 if (!state.customPrices[cat][idx]) state.customPrices[cat][idx] = {};
                 if (val === '') {
                     delete state.customPrices[cat][idx][tipo];
-                    e.target.classList.remove('precio-input-modified');
-                    e.target.classList.add('precio-input-default');
+                    e.target.classList.remove('modified');
                 } else {
                     state.customPrices[cat][idx][tipo] = val;
-                    e.target.classList.remove('precio-input-default');
-                    e.target.classList.add('precio-input-modified');
+                    e.target.classList.add('modified');
                 }
                 renderFormatoTables();
                 updateView();
@@ -629,8 +629,16 @@
         // En standalone, mostramos formatos solo si showFormatos está activado
         let formatosHTML = '';
         if (state.showFormatos) {
-            const trenesRows = TARIFARIO.trenes.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
-            const colectivosRows = TARIFARIO.colectivos.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
+            const trenesRows = TARIFARIO.trenes.map((f, i) => {
+                const exh = getPrecio('trenes', i, 'exhibicion');
+                const prod = getPrecio('trenes', i, 'produccion');
+                return `<tr><td>${f.nombre}</td><td class="num">${formatMoney(exh)}</td><td class="num">${prod ? formatMoney(prod) : '—'}</td></tr>`;
+            }).join('');
+            const colectivosRows = TARIFARIO.colectivos.map((f, i) => {
+                const exh = getPrecio('colectivos', i, 'exhibicion');
+                const prod = getPrecio('colectivos', i, 'produccion');
+                return `<tr><td>${f.nombre}</td><td class="num">${formatMoney(exh)}</td><td class="num">${prod ? formatMoney(prod) : '—'}</td></tr>`;
+            }).join('');
             const formatosNum = '02';
             formatosHTML = `
             <section id="formatos" class="formatos">

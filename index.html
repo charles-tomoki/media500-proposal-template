@@ -84,14 +84,24 @@
 
         <!-- EDICIÓN DE PRECIOS -->
         <div class="editor-group" id="editorPreciosGroup" style="display:none;">
-            <label>💰 Precios personalizados (opcional)</label>
-            <p style="font-size:0.7rem;color:var(--gray-400);margin-bottom:8px;">Modificá los precios que quieras. Los vacíos usan el valor por defecto.</p>
+            <label>💰 Editar precios de la tabla</label>
+            <p style="font-size:0.7rem;color:var(--gray-400);margin-bottom:8px;">Hacé clic en cualquier precio para modificarlo. Los cambios se reflejan en la propuesta.</p>
             <div class="editor-precios-tabs">
-                <button type="button" class="precios-tab active" data-tab="preciosTrenes">🚆 Trenes</button>
-                <button type="button" class="precios-tab" data-tab="preciosColectivos">🚌 Colectivos</button>
+                <button type="button" class="precios-tab active" data-tab="editorTablaTrenes">🚆 Trenes</button>
+                <button type="button" class="precios-tab" data-tab="editorTablaColectivos">🚌 Colectivos</button>
             </div>
-            <div class="editor-precios-panel active" id="preciosTrenes"></div>
-            <div class="editor-precios-panel" id="preciosColectivos"></div>
+            <div class="editor-precios-panel active" id="editorTablaTrenes">
+                <table class="editor-formato-table">
+                    <thead><tr><th>Formato</th><th class="num">Exhibición</th><th class="num">Producción</th></tr></thead>
+                    <tbody id="editorTablaTrenesBody"></tbody>
+                </table>
+            </div>
+            <div class="editor-precios-panel" id="editorTablaColectivos">
+                <table class="editor-formato-table">
+                    <thead><tr><th>Formato</th><th class="num">Exhibición</th><th class="num">Producción</th></tr></thead>
+                    <tbody id="editorTablaColectivosBody"></tbody>
+                </table>
+            </div>
         </div>
 
         <hr class="editor-divider">

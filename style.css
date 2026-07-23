@@ -837,8 +837,73 @@ body:not(.editor-closed) #proposalView {
 .editor-cot-totals strong { color: var(--white); font-size: 0.9rem; }
 
 /* ============================================
-   EDITOR DE PRECIOS PERSONALIZADOS
+   EDITOR DE PRECIOS (TABLAS EDITABLES)
    ============================================ */
+.editor-formato-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    background: var(--gray-900);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+.editor-formato-table thead {
+    background: var(--navy);
+    color: var(--white);
+}
+.editor-formato-table th {
+    padding: 12px 14px;
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.editor-formato-table th.num { text-align: right; }
+.editor-formato-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--gray-300);
+    vertical-align: middle;
+}
+.editor-formato-table td.num {
+    text-align: right;
+}
+.editor-formato-table tbody tr:last-child td { border-bottom: none; }
+.editor-formato-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+/* Inputs inline en tabla */
+.editor-precio-input {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1.5px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    transition: all var(--transition-fast);
+}
+.editor-precio-input:focus {
+    outline: none;
+    border-color: var(--blue);
+    background: rgba(255,255,255,0.08);
+}
+.editor-precio-input::placeholder {
+    color: var(--gray-600);
+    font-size: 0.7rem;
+}
+.editor-precio-input.modified {
+    border-color: rgba(0,191,255,0.5);
+    background: rgba(0,191,255,0.08);
+    color: #7fdbff;
+}
+
+/* Old styles kept for compatibility */
 .editor-precios-tabs {
     display: flex;
     gap: 8px;
@@ -868,66 +933,8 @@ body:not(.editor-closed) #proposalView {
 }
 .editor-precios-panel {
     display: none;
-    max-height: 300px;
-    overflow-y: auto;
-    padding-right: 4px;
 }
 .editor-precios-panel.active { display: block; }
-.precio-row {
-    display: grid;
-    grid-template-columns: 1fr 90px 90px;
-    gap: 8px;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.precio-row:last-child { border-bottom: none; }
-.precio-label {
-    font-size: 0.72rem;
-    color: var(--gray-300);
-    line-height: 1.3;
-}
-.precio-input-wrap {
-    position: relative;
-}
-.precio-input-wrap::before {
-    content: '$';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.7rem;
-    color: var(--gray-500);
-    pointer-events: none;
-}
-.precio-input {
-    width: 100%;
-    padding: 6px 8px 6px 20px;
-    border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    background: rgba(255,255,255,0.05);
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    transition: border-color var(--transition-fast);
-}
-.precio-input:focus {
-    outline: none;
-    border-color: var(--blue);
-}
-.precio-input::placeholder {
-    color: var(--gray-500);
-    font-size: 0.7rem;
-}
-.precio-input-default {
-    color: var(--gray-400);
-}
-.precio-input-modified {
-    border-color: rgba(0,150,255,0.5);
-    background: rgba(0,150,255,0.08);
-}
-.editor-precios-panel::-webkit-scrollbar { width: 4px; }
-.editor-precios-panel::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
 
 /* ============================================
    COBERTURA LED
