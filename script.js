@@ -445,7 +445,7 @@
                             <tfoot><tr><td colspan="4" style="text-align:right;font-weight:700;">TOTAL</td><td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumExh)}</strong></td><td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumProd)}</strong></td></tr></tfoot>
                         </table>
                     </div>
-                    <p class="formato-nota" style="margin-top:16px;">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+                    <p class="formato-nota" style="margin-top:16px;">* No incluye IVA. El costo de producción es por única vez o por cambio de creatividad. Incluye fijación.</p>
                 </div>
             </section>`;
         }
@@ -507,11 +507,11 @@
                     <div class="formatos-content">
                         <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚆 Trenes</h3>
                         <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${trenesRows}</tbody></table></div>
-                        <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+                        <p class="formato-nota">* No incluye IVA. El costo de producción es por única vez o por cambio de creatividad. Incluye fijación.</p>
                         <br><br>
                         <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚌 Colectivos</h3>
                         <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${colectivosRows}</tbody></table></div>
-                        <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+                        <p class="formato-nota">* No incluye IVA. El costo de producción es por única vez o por cambio de creatividad. Incluye fijación.</p>
                     </div>
                 </div>
             </section>`;
