@@ -64,7 +64,6 @@
         showTotems: true,
         showOtros: true,
         showFormatos: false,
-        showDatos: true,
         cotItems: []
     };
 
@@ -196,15 +195,11 @@
         cotTableFoot: document.getElementById('cotTableFoot'),
         mockupSection: document.getElementById('mockups'),
         coberturaSection: document.getElementById('cobertura'),
-        datosSection: document.getElementById('datos'),
-        navFormatos: document.querySelector('a[href="#formatos"]'),
         navCotizacion: document.getElementById('navCotizacion'),
         navMockups: document.getElementById('navMockups'),
-        navDatos: document.getElementById('navDatos'),
         cotNumber: document.getElementById('cotNumber'),
         mockNumber: document.getElementById('mockNumber'),
         ledNumber: document.getElementById('ledNumber'),
-        datosNumber: document.getElementById('datosNumber'),
     };
 
     function readFile(file) {
@@ -313,12 +308,6 @@
         // Formatos section visibility
         const showFormatos = state.showFormatos;
         if (view.formatosSection) view.formatosSection.classList.toggle('hidden', !showFormatos);
-        if (view.navFormatos) view.navFormatos.classList.toggle('hidden', !showFormatos);
-
-        // Datos section visibility
-        const showDatos = state.showDatos;
-        if (view.datosSection) view.datosSection.classList.toggle('hidden', !showDatos);
-        if (view.navDatos) view.navDatos.classList.toggle('hidden', !showDatos);
 
         // Dynamic numbering
         let num = 2;
@@ -326,7 +315,6 @@
         if (hasCot) { if (view.cotNumber) view.cotNumber.textContent = String(num).padStart(2, '0'); num++; }
         if (anyMockups) { if (view.mockNumber) view.mockNumber.textContent = String(num).padStart(2, '0'); num++; }
         if (showLed) { if (view.ledNumber) view.ledNumber.textContent = String(num).padStart(2, '0'); num++; }
-        if (showDatos) { if (view.datosNumber) view.datosNumber.textContent = String(num).padStart(2, '0'); num++; }
     }
 
     // ============================================
@@ -364,7 +352,6 @@
         previewOtros: document.getElementById('previewOtros'),
         toggleOtros: document.getElementById('toggleOtros'),
         toggleFormatos: document.getElementById('toggleFormatos'),
-        toggleDatos: document.getElementById('toggleDatos'),
         btnCloseEditor: document.getElementById('btnCloseEditor'),
         btnOpenEditor: document.getElementById('btnOpenEditor'),
         btnPreview: document.getElementById('btnPreview'),
@@ -517,23 +504,8 @@
             </section>`;
         }
 
-        // Datos section
+        // Datos section removed
         let datosHTML = '';
-        if (state.showDatos) {
-            datosHTML = `
-            <section id="datos" class="datos">
-                <div class="section-wrapper">
-                    <div class="section-header"><span class="section-number">${String(num).padStart(2,'0')}</span><h2 class="section-title">Datos que respaldan la inversión</h2><p class="section-subtitle">Números oficiales del Ministerio de Transporte</p></div>
-                    <div class="datos-grid">
-                        <div class="dato-card"><div class="dato-number">175.9M</div><div class="dato-label">pasajeros/año Línea Roca</div><div class="dato-context">~482.000 pasajeros por día. 75 estaciones. 198 km.</div></div>
-                        <div class="dato-card"><div class="dato-number">17.5M</div><div class="dato-label">pasajeros/año Línea Belgrano Sur</div><div class="dato-context">~47.900 pasajeros por día. Dwell time de 70-77 min.</div></div>
-                        <div class="dato-card"><div class="dato-number">6-9</div><div class="dato-label">horas pico mañana</div><div class="dato-context">Y 17-20 hs tarde. Frecuencia cada 8-15 min en pico.</div></div>
-                        <div class="dato-card"><div class="dato-number">40-77</div><div class="dato-label">minutos de exposición</div><div class="dato-context">Dwell time promedio por pasajero.</div></div>
-                    </div>
-                </div>
-            </section>`;
-            num++;
-        }
 
         // Términos section
         let terminosHTML = '';

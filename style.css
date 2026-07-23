@@ -757,43 +757,6 @@ body:not(.editor-closed) #proposalView {
 }
 
 /* ============================================
-   DATOS
-   ============================================ */
-.datos { padding: var(--section-padding) 0; background: var(--navy); color: var(--white); }
-.datos .section-title { color: var(--white); }
-.datos .section-subtitle { color: var(--gray-400); }
-.datos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-.dato-card {
-    text-align: center;
-    padding: 36px 24px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 16px;
-    transition: all var(--transition-medium);
-}
-.dato-card:hover {
-    background: rgba(255,255,255,0.08);
-    transform: translateY(-4px);
-}
-.dato-number {
-    font-family: var(--font-display);
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--blue);
-    line-height: 1;
-    margin-bottom: 8px;
-}
-.dato-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--white);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
-}
-.dato-context { font-size: 0.85rem; color: var(--gray-400); line-height: 1.5; }
-
-/* ============================================
    CONTACTO
    ============================================ */
 .contacto { padding: var(--section-padding) 0; background: var(--white); }
@@ -965,10 +928,6 @@ body:not(.editor-closed) #proposalView {
 .cards-grid .info-card:nth-child(2) { transition-delay: 0.1s; }
 .cards-grid .info-card:nth-child(3) { transition-delay: 0.2s; }
 .cards-grid .info-card:nth-child(4) { transition-delay: 0.3s; }
-.datos-grid .dato-card:nth-child(1) { transition-delay: 0s; }
-.datos-grid .dato-card:nth-child(2) { transition-delay: 0.1s; }
-.datos-grid .dato-card:nth-child(3) { transition-delay: 0.2s; }
-.datos-grid .dato-card:nth-child(4) { transition-delay: 0.3s; }
 
 /* ============================================
    RESPONSIVE
@@ -980,7 +939,6 @@ body:not(.editor-closed) #proposalView {
     .hero-visual { flex-direction: row; flex-wrap: wrap; justify-content: center; }
     .sc-2, .sc-3 { margin-left: 0; }
     .cards-grid { grid-template-columns: repeat(2, 1fr); }
-    .datos-grid { grid-template-columns: repeat(2, 1fr); }
     .mockup-grid { grid-template-columns: 1fr; }
     .contacto-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -1003,7 +961,6 @@ body:not(.editor-closed) #proposalView {
     .hero-actions { flex-direction: column; }
     .btn { width: 100%; justify-content: center; }
     .cards-grid { grid-template-columns: 1fr; }
-    .datos-grid { grid-template-columns: 1fr; }
     .section-title { font-size: 1.8rem; }
     .contacto-grid { grid-template-columns: 1fr; }
 }
