@@ -63,7 +63,7 @@
         showLed: true,
         showTotems: true,
         showOtros: true,
-        showFormatos: true,
+        showFormatos: false,
         showDatos: true,
         cotItems: []
     };
@@ -603,18 +603,6 @@ ${cotHTML}
 ${mockupsHTML}
 ${datosHTML}
 ${terminosHTML}
-
-<section id="contacto" class="contacto">
-    <div class="section-wrapper">
-        <div class="contacto-content">
-            <h2 class="contacto-title">¿Listo para mover tu marca?</h2>
-            <p class="contacto-subtitle">Contactanos y armamos una propuesta a medida</p>
-            <div class="contacto-grid">
-                <div class="contacto-item"><div class="contacto-icon">◎</div><span class="contacto-label">Oficina</span><span class="contacto-value">Buenos Aires, Argentina</span></div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <footer class="footer">
     <div class="footer-wrapper">
