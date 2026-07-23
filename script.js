@@ -504,7 +504,6 @@
             formatosHTML = `
             <section id="formatos" class="formatos">
                 <div class="section-wrapper">
-                    <div class="section-header"><span class="section-number">${formatosNum}</span><h2 class="section-title">Formatos disponibles</h2><p class="section-subtitle">Desde una cenefa hasta una formación completa ploteada</p></div>
                     <div class="formatos-content">
                         <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚆 Trenes</h3>
                         <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${trenesRows}</tbody></table></div>
