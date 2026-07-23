@@ -513,4 +513,18 @@
    498|   498|                        <br><br>
    499|   499|                        <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚌 Colectivos</h3>
    500|   500|                        <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${colectivosRows}</tbody></table></div>
+   501|   501|                    </div>
+   502|   502|                </div>
+   503|   503|            </section>`;
+   504|   504|        }
+   505|   505|
+   506|   506|        // Return assembled HTML
+   507|   507|        return assembleHTML(clientName, logoHTML, formatosHTML, cotHTML, mockupsHTML, state.showFormatos, hasCot, anyMockups, showLedSection);
+   508|   508|    }
+   509|   509|
+   510|   510|    // Initialize
+   511|   511|    populateDropdown();
+   512|   512|    renderFormatoTables();
+   513|   513|
+   514|   514|})();
    501|
