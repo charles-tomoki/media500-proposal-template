@@ -596,7 +596,7 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
 .brand-text{display:flex;align-items:baseline;gap:2px}
 .brand-media{font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:var(--navy)}
 .brand-500{font-family:var(--font-display);font-size:1.2rem;font-weight:800;color:var(--blue)}
-.client-logo-nav{height:32px;width:auto;object-fit:contain;margin-left:12px;padding-left:12px;border-left:1px solid var(--gray-200)}
+.client-logo-nav{height:72px;width:auto;object-fit:contain;margin-left:12px;padding-left:12px;border-left:1px solid var(--gray-200)}
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:140px 32px 80px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--gray-50) 0%,var(--white) 50%,var(--blue-light) 100%)}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(0,143,213,0.08) 0%,transparent 60%),radial-gradient(ellipse at 30% 70%,rgba(10,22,40,0.03) 0%,transparent 50%);pointer-events:none}
 .hero-content{max-width:var(--max-width);width:100%;display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:center;position:relative;z-index:1}
@@ -654,9 +654,9 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
 .cot-table tfoot td.num{font-size:1.05rem;color:var(--blue)}
 .mockup-section{padding:var(--section-padding) 0;background:var(--white)}
 .mockup-header{text-align:center;margin-bottom:64px}
-.mockup-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
+.mockup-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:40px}
 .mockup-item{border-radius:16px;overflow:hidden;border:1px solid var(--gray-200);background:var(--gray-50)}
-.mockup-image{position:relative;width:100%;height:300px;overflow:hidden;background:var(--gray-200);display:flex;align-items:center;justify-content:center}
+.mockup-image{position:relative;width:100%;height:420px;overflow:hidden;background:var(--gray-200);display:flex;align-items:center;justify-content:center}
 .mockup-image img{width:100%;height:100%;object-fit:cover}
 .mockup-overlay{position:absolute;bottom:20px;left:20px}
 .mockup-tag{background:var(--navy);color:var(--white);padding:8px 16px;border-radius:8px;font-size:0.8rem;font-weight:600;letter-spacing:0.05em}

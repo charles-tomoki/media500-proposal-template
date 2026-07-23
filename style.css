@@ -261,7 +261,7 @@ body:not(.editor-closed) #proposalView {
     letter-spacing: -0.02em;
 }
 .client-logo-nav {
-    height: 52px;
+    height: 72px;
     width: auto;
     object-fit: contain;
     margin-left: 12px;
@@ -596,7 +596,7 @@ body:not(.editor-closed) #proposalView {
    ============================================ */
 .mockup-section { padding: var(--section-padding) 0; background: var(--white); }
 .mockup-header { text-align: center; margin-bottom: 64px; }
-.mockup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+.mockup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 40px; }
 .mockup-item {
     border-radius: 16px;
     overflow: hidden;
@@ -606,7 +606,7 @@ body:not(.editor-closed) #proposalView {
 .mockup-image {
     position: relative;
     width: 100%;
-    height: 300px;
+    height: 420px;
     overflow: hidden;
     background: var(--gray-200);
     display: flex;
