@@ -507,8 +507,8 @@ body:not(.editor-closed) #proposalView {
    ============================================ */
 .oportunidad { padding: var(--section-padding) 0; background: var(--white); }
 .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 340px);
+    display: flex;
+    flex-wrap: wrap;
     gap: 24px;
     justify-content: center;
 }
