@@ -507,10 +507,10 @@ body:not(.editor-closed) #proposalView {
    ============================================ */
 .oportunidad { padding: var(--section-padding) 0; background: var(--white); }
 .cards-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 320px);
     gap: 24px;
+    justify-content: center;
 }
 .info-card {
     width: 320px;
@@ -942,8 +942,8 @@ body:not(.editor-closed) #proposalView {
     .hero-subtitle { margin: 0 auto; }
     .hero-visual { flex-direction: row; flex-wrap: wrap; justify-content: center; }
     .sc-2, .sc-3 { margin-left: 0; }
-    .cards-grid { gap: 20px; }
-    .info-card { width: 100%; max-width: 400px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 20px; }
+    .info-card { width: auto; max-width: 100%; }
     .mockup-grid { grid-template-columns: 1fr; }
     .contacto-grid { grid-template-columns: repeat(2, 1fr); }
 }
@@ -965,8 +965,8 @@ body:not(.editor-closed) #proposalView {
     .hero-title { font-size: 2.2rem; }
     .hero-actions { flex-direction: column; }
     .btn { width: 100%; justify-content: center; }
-    .cards-grid { gap: 20px; }
-    .info-card { width: 100%; max-width: 400px; }
+    .cards-grid { grid-template-columns: 1fr; gap: 20px; }
+    .info-card { width: auto; max-width: 100%; }
     .section-title { font-size: 1.8rem; }
     .contacto-grid { grid-template-columns: 1fr; }
 }
