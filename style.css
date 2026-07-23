@@ -592,7 +592,7 @@ body:not(.editor-closed) #proposalView {
    ============================================ */
 .mockup-section { padding: var(--section-padding) 0; background: var(--white); }
 .mockup-header { text-align: center; margin-bottom: 64px; }
-.mockup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+.mockup-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
 .mockup-item {
     border-radius: 16px;
     overflow: hidden;

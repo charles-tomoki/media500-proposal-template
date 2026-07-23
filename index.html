@@ -75,8 +75,10 @@
         <hr class="editor-divider">
 
         <!-- FOTOS -->
+        <div class="editor-section-title">🖼️ Fotos de campaña</div>
+
         <div class="editor-group">
-            <label>Foto — Trenes</label>
+            <label>Foto — Trenes (ploteo full/formación)</label>
             <input type="file" id="uploadTrenes" accept="image/*">
             <div class="editor-preview" id="previewTrenes"></div>
             <label class="toggle-row">
@@ -85,7 +87,25 @@
             </label>
         </div>
         <div class="editor-group">
-            <label>Foto — Colectivos</label>
+            <label>Foto — Trenes (ploteo parcial/puertas y ventanas)</label>
+            <input type="file" id="uploadTrenesPyV" accept="image/*">
+            <div class="editor-preview" id="previewTrenesPyV"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleTrenesPyV" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Trenes (cenefas interiores)</label>
+            <input type="file" id="uploadTrenesCenefas" accept="image/*">
+            <div class="editor-preview" id="previewTrenesCenefas"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleTrenesCenefas" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Colectivos (luneta premium)</label>
             <input type="file" id="uploadColectivos" accept="image/*">
             <div class="editor-preview" id="previewColectivos"></div>
             <label class="toggle-row">
@@ -94,11 +114,47 @@
             </label>
         </div>
         <div class="editor-group">
-            <label>Foto — Cobertura Líneas LED</label>
+            <label>Foto — Colectivos (diferencial / panorámico)</label>
+            <input type="file" id="uploadColectivosDif" accept="image/*">
+            <div class="editor-preview" id="previewColectivosDif"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleColectivosDif" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Colectivos (interior/cenefas)</label>
+            <input type="file" id="uploadColectivosInt" accept="image/*">
+            <div class="editor-preview" id="previewColectivosInt"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleColectivosInt" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Pantallas LED (Luneta LED)</label>
             <input type="file" id="uploadLed" accept="image/*">
             <div class="editor-preview" id="previewLed"></div>
             <label class="toggle-row">
                 <input type="checkbox" id="toggleLed" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Tótems UBA</label>
+            <input type="file" id="uploadTotems" accept="image/*">
+            <div class="editor-preview" id="previewTotems"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleTotems" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Back Full / Otros formatos</label>
+            <input type="file" id="uploadOtros" accept="image/*">
+            <div class="editor-preview" id="previewOtros"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleOtros" checked>
                 <span>Mostrar en propuesta</span>
             </label>
         </div>
@@ -280,7 +336,7 @@
     </div>
 </section>
 
-<!-- MOCKUPS (condicional) -->
+<!-- GALERÍA DE FOTOS (condicional) -->
 <section id="mockups" class="mockup-section hidden" data-section="mockups">
     <div class="section-wrapper">
         <div class="mockup-header reveal-up">
@@ -290,12 +346,40 @@
         </div>
         <div class="mockup-grid" id="mockupGrid">
             <div class="mockup-item reveal-scale hidden" data-mockup="trenes">
-                <div class="mockup-image"><img id="imgTrenes" src="" alt="Mockup trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes</span></div></div>
-                <p class="mockup-caption">Impacto visual en formaciones de trenes</p>
+                <div class="mockup-image"><img id="imgTrenes" src="" alt="Ploteo full trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes · Full</span></div></div>
+                <p class="mockup-caption">Formación completa ploteada</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="trenesPyV">
+                <div class="mockup-image"><img id="imgTrenesPyV" src="" alt="Ploteo parcial trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes · Puertas y Ventanas</span></div></div>
+                <p class="mockup-caption">Ploteo parcial en puertas y ventanas</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="trenesCenefas">
+                <div class="mockup-image"><img id="imgTrenesCenefas" src="" alt="Cenefas trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes · Cenefas</span></div></div>
+                <p class="mockup-caption">Cenefas interiores en coches</p>
             </div>
             <div class="mockup-item reveal-scale hidden" data-mockup="colectivos">
-                <div class="mockup-image"><img id="imgColectivos" src="" alt="Mockup colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos</span></div></div>
-                <p class="mockup-caption">Presencia en lunetas y laterales de colectivos</p>
+                <div class="mockup-image"><img id="imgColectivos" src="" alt="Luneta premium"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Luneta</span></div></div>
+                <p class="mockup-caption">Luneta premium en unidades</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="colectivosDif">
+                <div class="mockup-image"><img id="imgColectivosDif" src="" alt="Diferencial colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Diferencial</span></div></div>
+                <p class="mockup-caption">Formato diferencial / panorámico</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="colectivosInt">
+                <div class="mockup-image"><img id="imgColectivosInt" src="" alt="Interior colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Interior</span></div></div>
+                <p class="mockup-caption">Cenefas y publicidad interior</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="led">
+                <div class="mockup-image"><img id="imgLed" src="" alt="Pantallas LED"><div class="mockup-overlay"><span class="mockup-tag">Pantallas LED</span></div></div>
+                <p class="mockup-caption">Pantallas digitales en estaciones</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="totems">
+                <div class="mockup-image"><img id="imgTotems" src="" alt="Tótems UBA"><div class="mockup-overlay"><span class="mockup-tag">Tótems UBA</span></div></div>
+                <p class="mockup-caption">Tótems digitales universitarios</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="otros">
+                <div class="mockup-image"><img id="imgOtros" src="" alt="Otros formatos"><div class="mockup-overlay"><span class="mockup-tag">Otros formatos</span></div></div>
+                <p class="mockup-caption">Back full y formatos especiales</p>
             </div>
         </div>
     </div>
