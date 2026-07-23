@@ -66,22 +66,35 @@
         showTotems: true,
         showOtros: true,
         showFormatos: false,
-        cotItems: []
+        cotItems: [],
+        customPrices: { trenes: {}, colectivos: {} }
     };
 
     // ============================================
     // FORMATO TABLES
     // ============================================
+    function getPrecio(cat, idx, tipo) {
+        const custom = state.customPrices[cat][idx];
+        if (custom && custom[tipo] !== undefined && custom[tipo] !== '') {
+            return parseFloat(custom[tipo]);
+        }
+        return TARIFARIO[cat][idx][tipo];
+    }
+
     function renderFormatoTables() {
         const tbodyTrenes = document.getElementById('tablaTrenes');
         const tbodyColectivos = document.getElementById('tablaColectivos');
         if (!tbodyTrenes || !tbodyColectivos) return;
-        tbodyTrenes.innerHTML = TARIFARIO.trenes.map(f => `
-            <tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>
-        `).join('');
-        tbodyColectivos.innerHTML = TARIFARIO.colectivos.map(f => `
-            <tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>
-        `).join('');
+        tbodyTrenes.innerHTML = TARIFARIO.trenes.map((f, i) => {
+            const exh = getPrecio('trenes', i, 'exhibicion');
+            const prod = getPrecio('trenes', i, 'produccion');
+            return `<tr><td>${f.nombre}</td><td class="num">${formatMoney(exh)}</td><td class="num">${prod ? formatMoney(prod) : '—'}</td></tr>`;
+        }).join('');
+        tbodyColectivos.innerHTML = TARIFARIO.colectivos.map((f, i) => {
+            const exh = getPrecio('colectivos', i, 'exhibicion');
+            const prod = getPrecio('colectivos', i, 'produccion');
+            return `<tr><td>${f.nombre}</td><td class="num">${formatMoney(exh)}</td><td class="num">${prod ? formatMoney(prod) : '—'}</td></tr>`;
+        }).join('');
     }
 
     // ============================================
@@ -135,6 +148,82 @@
                 menu.classList.remove('open');
                 trigger.classList.remove('active');
             }
+        });
+    }
+
+
+    // ============================================
+    // EDITOR DE PRECIOS PERSONALIZADOS
+    // ============================================
+    function renderPreciosEditor() {
+        const panelTrenes = document.getElementById('preciosTrenes');
+        const panelColectivos = document.getElementById('preciosColectivos');
+        if (!panelTrenes || !panelColectivos) return;
+
+        function buildRows(arr, cat) {
+            return arr.map((f, i) => {
+                const custom = state.customPrices[cat][i] || {};
+                const exhVal = custom.exhibicion !== undefined ? custom.exhibicion : '';
+                const prodVal = custom.produccion !== undefined ? custom.produccion : '';
+                const exhClass = exhVal !== '' ? 'precio-input-modified' : 'precio-input-default';
+                const prodClass = prodVal !== '' ? 'precio-input-modified' : 'precio-input-default';
+                return `
+                    <div class="precio-row">
+                        <span class="precio-label">${f.nombre}</span>
+                        <div class="precio-input-wrap">
+                            <input type="number" class="precio-input ${exhClass}" data-cat="${cat}" data-idx="${i}" data-tipo="exhibicion" placeholder="${f.exhibicion.toLocaleString('es-AR')}" value="${exhVal}">
+                        </div>
+                        <div class="precio-input-wrap">
+                            <input type="number" class="precio-input ${prodClass}" data-cat="${cat}" data-idx="${i}" data-tipo="produccion" placeholder="${f.produccion ? f.produccion.toLocaleString('es-AR') : '—'}" value="${prodVal}">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        panelTrenes.innerHTML = buildRows(TARIFARIO.trenes, 'trenes');
+        panelColectivos.innerHTML = buildRows(TARIFARIO.colectivos, 'colectivos');
+
+        // Attach listeners
+        document.querySelectorAll('.precio-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const cat = e.target.dataset.cat;
+                const idx = parseInt(e.target.dataset.idx);
+                const tipo = e.target.dataset.tipo;
+                const val = e.target.value.trim();
+                if (!state.customPrices[cat][idx]) state.customPrices[cat][idx] = {};
+                if (val === '') {
+                    delete state.customPrices[cat][idx][tipo];
+                    e.target.classList.remove('precio-input-modified');
+                    e.target.classList.add('precio-input-default');
+                } else {
+                    state.customPrices[cat][idx][tipo] = val;
+                    e.target.classList.remove('precio-input-default');
+                    e.target.classList.add('precio-input-modified');
+                }
+                renderFormatoTables();
+                updateView();
+            });
+        });
+    }
+
+    // Tabs de precios
+    document.querySelectorAll('.precios-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.precios-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.editor-precios-panel').forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // Mostrar/ocultar editor de precios al activar tabla de formatos
+    const toggleFormatos = document.getElementById('toggleFormatos');
+    const editorPreciosGroup = document.getElementById('editorPreciosGroup');
+    if (toggleFormatos && editorPreciosGroup) {
+        toggleFormatos.addEventListener('change', (e) => {
+            editorPreciosGroup.style.display = e.target.checked ? 'block' : 'none';
+            if (e.target.checked) renderPreciosEditor();
         });
     }
 
@@ -194,9 +283,12 @@
         if (!val) { alert('Seleccioná un formato'); return; }
 
         const [cat, idx] = val.split('-');
-        const formato = TARIFARIO[cat][parseInt(idx)];
-        const totalExh = formato.exhibicion * cantidad * meses;
-        const totalProd = formato.produccion * cantidad;
+        const idxNum = parseInt(idx);
+        const formato = TARIFARIO[cat][idxNum];
+        const exh = getPrecio(cat, idxNum, 'exhibicion');
+        const prod = getPrecio(cat, idxNum, 'produccion');
+        const totalExh = exh * cantidad * meses;
+        const totalProd = prod * cantidad;
 
         state.cotItems.push({
             id: Date.now(),

@@ -82,6 +82,18 @@
             </label>
         </div>
 
+        <!-- EDICIÓN DE PRECIOS -->
+        <div class="editor-group" id="editorPreciosGroup" style="display:none;">
+            <label>💰 Precios personalizados (opcional)</label>
+            <p style="font-size:0.7rem;color:var(--gray-400);margin-bottom:8px;">Modificá los precios que quieras. Los vacíos usan el valor por defecto.</p>
+            <div class="editor-precios-tabs">
+                <button type="button" class="precios-tab active" data-tab="preciosTrenes">🚆 Trenes</button>
+                <button type="button" class="precios-tab" data-tab="preciosColectivos">🚌 Colectivos</button>
+            </div>
+            <div class="editor-precios-panel active" id="preciosTrenes"></div>
+            <div class="editor-precios-panel" id="preciosColectivos"></div>
+        </div>
+
         <hr class="editor-divider">
 
         <!-- FOTOS -->
