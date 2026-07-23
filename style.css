@@ -910,61 +910,122 @@ body:not(.editor-closed) #proposalView {
    ============================================ */
 .terminos-section {
     padding: var(--section-padding) 0 40px;
-    background: var(--white);
-    border-top: 1px solid var(--gray-200);
+    background: linear-gradient(135deg, var(--navy) 0%, #0a1929 100%);
+    position: relative;
+    overflow: hidden;
+}
+.terminos-section::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(0,150,255,0.04) 0%, transparent 50%);
 }
 .terminos-content {
-    max-width: var(--max-width);
+    max-width: 720px;
     margin: 0 auto;
     padding: 0 32px;
+    position: relative;
+    z-index: 2;
+}
+.terminos-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 48px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.terminos-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+.terminos-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 24px rgba(0,150,255,0.25);
+}
+.terminos-icon svg {
+    width: 26px;
+    height: 26px;
+    color: var(--white);
 }
 .terminos-title {
     font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 800;
     color: var(--navy);
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    margin-bottom: 32px;
-    text-align: left;
+    margin-bottom: 0;
+    text-align: center;
+}
+.terminos-deco {
+    width: 48px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--blue), var(--blue-light));
+    border-radius: 2px;
+    margin: 16px auto 0;
 }
 .terminos-body {
     font-size: 0.95rem;
     color: var(--gray-700);
     line-height: 1.8;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
+    text-align: center;
 }
 .terminos-body p {
     margin-bottom: 16px;
 }
+.terminos-body p:last-child {
+    margin-bottom: 0;
+}
 .terminos-firma {
-    text-align: left;
+    text-align: center;
     border-top: 1px solid var(--gray-200);
     padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
-.firma-line {
-    font-size: 0.9rem;
-    color: var(--gray-600);
-    margin-bottom: 24px;
+.firma-saludo {
+    font-size: 0.85rem;
+    color: var(--gray-500);
+    font-style: italic;
+    margin-bottom: 16px;
 }
 .firma-empresa {
     font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 1.15rem;
+    font-weight: 800;
     color: var(--navy);
-    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+.firma-separator {
+    width: 32px;
+    height: 2px;
+    background: var(--blue);
+    border-radius: 1px;
+    margin: 8px 0;
 }
 .firma-nombre {
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--gray-800);
     margin-bottom: 2px;
 }
 .firma-cargo {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 600;
     color: var(--gray-500);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.12em;
 }
 
 /* ============================================
