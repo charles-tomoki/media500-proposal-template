@@ -1,28 +1,11 @@
 /**
- * MEDIA 500 — Propuesta Comercial (Editable)
- * Panel de edición + exportación standalone
+ * MEDIA 500 — Propuesta Comercial (Editable + Cotizador)
  */
 
 (function() {
     'use strict';
 
     document.body.classList.add('js-enabled');
-
-    // ============================================
-    // STATE
-    // ============================================
-    const state = {
-        cliente: '',
-        email: 'comercial@media500.com',
-        tel: '+54 11 XXXX-XXXX',
-        logo: null,
-        fotoTrenes: null,
-        fotoColectivos: null,
-        fotoLed: null,
-        showTrenes: true,
-        showColectivos: true,
-        showLed: true
-    };
 
     // ============================================
     // TARIFARIO JULIO 2026
@@ -57,6 +40,23 @@
     }
 
     // ============================================
+    // STATE
+    // ============================================
+    const state = {
+        cliente: '',
+        email: 'comercial@media500.com',
+        tel: '+54 11 XXXX-XXXX',
+        logo: null,
+        fotoTrenes: null,
+        fotoColectivos: null,
+        fotoLed: null,
+        showTrenes: true,
+        showColectivos: true,
+        showLed: true,
+        cotItems: []
+    };
+
+    // ============================================
     // FORMATO TABLES
     // ============================================
     function renderFormatoTables() {
@@ -72,14 +72,215 @@
     }
 
     // ============================================
-    // EDITOR
+    // EDITOR DROPDOWN
+    // ============================================
+    function populateDropdown() {
+        const optgroupTrenes = document.getElementById('optgroupTrenes');
+        const optgroupColectivos = document.getElementById('optgroupColectivos');
+        if (!optgroupTrenes || !optgroupColectivos) return;
+
+        optgroupTrenes.innerHTML = TARIFARIO.trenes.map((f, i) =>
+            `<option value="trenes-${i}">${f.nombre}</option>`
+        ).join('');
+
+        optgroupColectivos.innerHTML = TARIFARIO.colectivos.map((f, i) =>
+            `<option value="colectivos-${i}">${f.nombre}</option>`
+        ).join('');
+    }
+
+    // ============================================
+    // COTIZADOR EDITOR
+    // ============================================
+    const cotFormato = document.getElementById('cotFormato');
+    const cotCantidad = document.getElementById('cotCantidad');
+    const cotMeses = document.getElementById('cotMeses');
+    const btnAddCot = document.getElementById('btnAddCot');
+    const editorCotBody = document.getElementById('editorCotBody');
+    const editorCotTotals = document.getElementById('editorCotTotals');
+
+    function renderEditorCot() {
+        if (state.cotItems.length === 0) {
+            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sin items</td></tr>';
+            editorCotTotals.innerHTML = '';
+            return;
+        }
+
+        let sumExh = 0, sumProd = 0;
+        editorCotBody.innerHTML = state.cotItems.map((item, i) => {
+            sumExh += item.totalExh;
+            sumProd += item.totalProd;
+            return `
+                <tr>
+                    <td>${item.cantidad}</td>
+                    <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + 'm)</span>' : ''}</td>
+                    <td class="num">${formatMoney(item.totalExh)}</td>
+                    <td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td>
+                    <td><button class="btn-delete-editor" data-idx="${i}">✕</button></td>
+                </tr>
+            `;
+        }).join('');
+
+        editorCotTotals.innerHTML = `
+            <div>Total Exhibición: <strong>${formatMoney(sumExh)}</strong></div>
+            <div>Total Producción: <strong>${formatMoney(sumProd)}</strong></div>
+        `;
+
+        // Attach delete handlers
+        editorCotBody.querySelectorAll('.btn-delete-editor').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.dataset.idx);
+                state.cotItems.splice(idx, 1);
+                renderEditorCot();
+                updateView();
+            });
+        });
+    }
+
+    btnAddCot.addEventListener('click', () => {
+        const val = cotFormato.value;
+        const cantidad = parseInt(cotCantidad.value) || 1;
+        const meses = parseInt(cotMeses.value) || 1;
+
+        if (!val) { alert('Seleccioná un formato'); return; }
+
+        const [cat, idx] = val.split('-');
+        const formato = TARIFARIO[cat][parseInt(idx)];
+        const totalExh = formato.exhibicion * cantidad * meses;
+        const totalProd = formato.produccion * cantidad;
+
+        state.cotItems.push({
+            id: Date.now(),
+            cantidad,
+            formato: formato.nombre,
+            puExh: formato.exhibicion,
+            puProd: formato.produccion,
+            meses,
+            totalExh,
+            totalProd
+        });
+
+        renderEditorCot();
+        updateView();
+    });
+
+    // ============================================
+    // VIEW ELEMENTS
+    // ============================================
+    const view = {
+        clientNameDisplay: document.getElementById('clientNameDisplay'),
+        emailDisplay: document.getElementById('emailDisplay'),
+        telDisplay: document.getElementById('telDisplay'),
+        clientLogoNav: document.getElementById('clientLogoNav'),
+        imgTrenes: document.getElementById('imgTrenes'),
+        imgColectivos: document.getElementById('imgColectivos'),
+        imgLed: document.getElementById('imgLed'),
+        cotizacionSection: document.getElementById('cotizacion'),
+        cotTableBody: document.getElementById('cotTableBody'),
+        cotTableFoot: document.getElementById('cotTableFoot'),
+        mockupSection: document.getElementById('mockups'),
+        coberturaSection: document.getElementById('cobertura'),
+        navCotizacion: document.getElementById('navCotizacion'),
+        navMockups: document.getElementById('navMockups'),
+        cotNumber: document.getElementById('cotNumber'),
+        mockNumber: document.getElementById('mockNumber'),
+        ledNumber: document.getElementById('ledNumber'),
+        datosNumber: document.getElementById('datosNumber'),
+    };
+
+    function readFile(file) {
+        return new Promise((resolve) => {
+            if (!file) { resolve(null); return; }
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function setPreview(container, src) {
+        if (!container) return;
+        if (src) { container.innerHTML = `<img src="${src}" alt="preview">`; }
+        else { container.innerHTML = '<span>Sin imagen</span>'; }
+    }
+
+    function updateView() {
+        // Text
+        if (view.clientNameDisplay) view.clientNameDisplay.textContent = state.cliente || '[NOMBRE DEL CLIENTE]';
+        if (view.emailDisplay) view.emailDisplay.textContent = state.email;
+        if (view.telDisplay) view.telDisplay.textContent = state.tel;
+
+        // Logo
+        if (view.clientLogoNav) {
+            if (state.logo) { view.clientLogoNav.src = state.logo; view.clientLogoNav.classList.remove('hidden'); }
+            else { view.clientLogoNav.classList.add('hidden'); }
+        }
+
+        // Images
+        if (view.imgTrenes) view.imgTrenes.src = state.fotoTrenes || '';
+        if (view.imgColectivos) view.imgColectivos.src = state.fotoColectivos || '';
+        if (view.imgLed) view.imgLed.src = state.fotoLed || '';
+
+        // Cotización section
+        const hasCot = state.cotItems.length > 0;
+        if (view.cotizacionSection) view.cotizacionSection.classList.toggle('hidden', !hasCot);
+        if (view.navCotizacion) view.navCotizacion.classList.toggle('hidden', !hasCot);
+
+        if (hasCot && view.cotTableBody) {
+            let sumExh = 0, sumProd = 0;
+            view.cotTableBody.innerHTML = state.cotItems.map(item => {
+                sumExh += item.totalExh;
+                sumProd += item.totalProd;
+                return `
+                    <tr>
+                        <td>${item.cantidad}</td>
+                        <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + ' meses)</span>' : ''}</td>
+                        <td class="num">${formatMoney(item.puExh)}</td>
+                        <td class="num">${item.puProd ? formatMoney(item.puProd) : '—'}</td>
+                        <td class="num">${formatMoney(item.totalExh)}</td>
+                        <td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            if (view.cotTableFoot) {
+                view.cotTableFoot.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align:right;font-weight:700;">TOTAL</td>
+                        <td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumExh)}</strong></td>
+                        <td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumProd)}</strong></td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Mockups
+        const mockupItems = document.querySelectorAll('[data-mockup]');
+        mockupItems.forEach(item => {
+            const type = item.dataset.mockup;
+            let show = false;
+            if (type === 'trenes') show = state.showTrenes && state.fotoTrenes;
+            if (type === 'colectivos') show = state.showColectivos && state.fotoColectivos;
+            item.classList.toggle('hidden', !show);
+        });
+        const anyMockups = (state.showTrenes && state.fotoTrenes) || (state.showColectivos && state.fotoColectivos);
+        if (view.mockupSection) view.mockupSection.classList.toggle('hidden', !anyMockups);
+        if (view.navMockups) view.navMockups.classList.toggle('hidden', !anyMockups);
+
+        // LED
+        const showLed = state.showLed && state.fotoLed;
+        if (view.coberturaSection) view.coberturaSection.classList.toggle('hidden', !showLed);
+
+        // Dynamic numbering
+        let num = 3;
+        if (hasCot) { if (view.cotNumber) view.cotNumber.textContent = String(num).padStart(2, '0'); num++; }
+        if (anyMockups) { if (view.mockNumber) view.mockNumber.textContent = String(num).padStart(2, '0'); num++; }
+        if (showLed) { if (view.ledNumber) view.ledNumber.textContent = String(num).padStart(2, '0'); num++; }
+        if (view.datosNumber) view.datosNumber.textContent = String(num).padStart(2, '0');
+    }
+
+    // ============================================
+    // EDITOR EVENTS
     // ============================================
     const els = {
-        panel: document.getElementById('editorPanel'),
-        btnClose: document.getElementById('btnCloseEditor'),
-        btnOpen: document.getElementById('btnOpenEditor'),
-        btnPreview: document.getElementById('btnPreview'),
-        btnExport: document.getElementById('btnExport'),
         uploadLogo: document.getElementById('uploadLogo'),
         previewLogo: document.getElementById('previewLogo'),
         inputCliente: document.getElementById('inputCliente'),
@@ -94,121 +295,34 @@
         uploadLed: document.getElementById('uploadLed'),
         previewLed: document.getElementById('previewLed'),
         toggleLed: document.getElementById('toggleLed'),
+        btnCloseEditor: document.getElementById('btnCloseEditor'),
+        btnOpenEditor: document.getElementById('btnOpenEditor'),
+        btnPreview: document.getElementById('btnPreview'),
+        btnExport: document.getElementById('btnExport'),
     };
 
-    const view = {
-        clientNameDisplay: document.getElementById('clientNameDisplay'),
-        emailDisplay: document.getElementById('emailDisplay'),
-        telDisplay: document.getElementById('telDisplay'),
-        clientLogoNav: document.getElementById('clientLogoNav'),
-        imgTrenes: document.getElementById('imgTrenes'),
-        imgColectivos: document.getElementById('imgColectivos'),
-        imgLed: document.getElementById('imgLed'),
-        mockupSection: document.getElementById('mockups'),
-        mockupGrid: document.getElementById('mockupGrid'),
-        coberturaSection: document.getElementById('cobertura'),
-        navMockups: document.getElementById('navMockups'),
-    };
+    if (els.uploadLogo) els.uploadLogo.addEventListener('change', async (e) => { state.logo = await readFile(e.target.files[0]); setPreview(els.previewLogo, state.logo); updateView(); });
+    if (els.inputCliente) els.inputCliente.addEventListener('input', (e) => { state.cliente = e.target.value; updateView(); });
+    if (els.inputEmail) els.inputEmail.addEventListener('input', (e) => { state.email = e.target.value; updateView(); });
+    if (els.inputTel) els.inputTel.addEventListener('input', (e) => { state.tel = e.target.value; updateView(); });
 
-    // Read file as base64
-    function readFile(file) {
-        return new Promise((resolve) => {
-            if (!file) { resolve(null); return; }
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result);
-            reader.readAsDataURL(file);
-        });
-    }
+    if (els.uploadTrenes) els.uploadTrenes.addEventListener('change', async (e) => { state.fotoTrenes = await readFile(e.target.files[0]); setPreview(els.previewTrenes, state.fotoTrenes); updateView(); });
+    if (els.toggleTrenes) els.toggleTrenes.addEventListener('change', (e) => { state.showTrenes = e.target.checked; updateView(); });
 
-    function setPreview(container, src) {
-        if (!container) return;
-        if (src) {
-            container.innerHTML = `<img src="${src}" alt="preview">`;
-        } else {
-            container.innerHTML = '<span>Sin imagen</span>';
-        }
-    }
+    if (els.uploadColectivos) els.uploadColectivos.addEventListener('change', async (e) => { state.fotoColectivos = await readFile(e.target.files[0]); setPreview(els.previewColectivos, state.fotoColectivos); updateView(); });
+    if (els.toggleColectivos) els.toggleColectivos.addEventListener('change', (e) => { state.showColectivos = e.target.checked; updateView(); });
 
-    function updateView() {
-        if (view.clientNameDisplay) view.clientNameDisplay.textContent = state.cliente || '[NOMBRE DEL CLIENTE]';
-        if (view.emailDisplay) view.emailDisplay.textContent = state.email;
-        if (view.telDisplay) view.telDisplay.textContent = state.tel;
-        if (view.clientLogoNav) {
-            if (state.logo) { view.clientLogoNav.src = state.logo; view.clientLogoNav.classList.remove('hidden'); }
-            else { view.clientLogoNav.classList.add('hidden'); }
-        }
-        if (view.imgTrenes) view.imgTrenes.src = state.fotoTrenes || '';
-        if (view.imgColectivos) view.imgColectivos.src = state.fotoColectivos || '';
-        if (view.imgLed) view.imgLed.src = state.fotoLed || '';
+    if (els.uploadLed) els.uploadLed.addEventListener('change', async (e) => { state.fotoLed = await readFile(e.target.files[0]); setPreview(els.previewLed, state.fotoLed); updateView(); });
+    if (els.toggleLed) els.toggleLed.addEventListener('change', (e) => { state.showLed = e.target.checked; updateView(); });
 
-        // Mockups visibility
-        const mockupItems = document.querySelectorAll('[data-mockup]');
-        mockupItems.forEach(item => {
-            const type = item.dataset.mockup;
-            let show = false;
-            if (type === 'trenes') show = state.showTrenes && state.fotoTrenes;
-            if (type === 'colectivos') show = state.showColectivos && state.fotoColectivos;
-            item.classList.toggle('hidden', !show);
-        });
-
-        const anyMockups = state.showTrenes && state.fotoTrenes || state.showColectivos && state.fotoColectivos;
-        if (view.mockupSection) view.mockupSection.classList.toggle('hidden', !anyMockups);
-        if (view.navMockups) view.navMockups.classList.toggle('hidden', !anyMockups);
-
-        // Cobertura LED
-        const showLedSection = state.showLed && state.fotoLed;
-        if (view.coberturaSection) view.coberturaSection.classList.toggle('hidden', !showLedSection);
-    }
-
-    // Logo
-    els.uploadLogo.addEventListener('change', async (e) => {
-        state.logo = await readFile(e.target.files[0]);
-        setPreview(els.previewLogo, state.logo);
-        updateView();
-    });
-
-    // Trenes
-    els.uploadTrenes.addEventListener('change', async (e) => {
-        state.fotoTrenes = await readFile(e.target.files[0]);
-        setPreview(els.previewTrenes, state.fotoTrenes);
-        updateView();
-    });
-    els.toggleTrenes.addEventListener('change', (e) => { state.showTrenes = e.target.checked; updateView(); });
-
-    // Colectivos
-    els.uploadColectivos.addEventListener('change', async (e) => {
-        state.fotoColectivos = await readFile(e.target.files[0]);
-        setPreview(els.previewColectivos, state.fotoColectivos);
-        updateView();
-    });
-    els.toggleColectivos.addEventListener('change', (e) => { state.showColectivos = e.target.checked; updateView(); });
-
-    // LED
-    els.uploadLed.addEventListener('change', async (e) => {
-        state.fotoLed = await readFile(e.target.files[0]);
-        setPreview(els.previewLed, state.fotoLed);
-        updateView();
-    });
-    els.toggleLed.addEventListener('change', (e) => { state.showLed = e.target.checked; updateView(); });
-
-    // Text inputs
-    els.inputCliente.addEventListener('input', (e) => { state.cliente = e.target.value; updateView(); });
-    els.inputEmail.addEventListener('input', (e) => { state.email = e.target.value; updateView(); });
-    els.inputTel.addEventListener('input', (e) => { state.tel = e.target.value; updateView(); });
-
-    // Panel toggle
-    els.btnClose.addEventListener('click', () => { document.body.classList.add('editor-closed'); });
-    els.btnOpen.addEventListener('click', () => { document.body.classList.remove('editor-closed'); });
-
-    // Preview
-    els.btnPreview.addEventListener('click', () => {
-        document.body.classList.add('editor-closed');
-    });
+    if (els.btnCloseEditor) els.btnCloseEditor.addEventListener('click', () => document.body.classList.add('editor-closed'));
+    if (els.btnOpenEditor) els.btnOpenEditor.addEventListener('click', () => document.body.classList.remove('editor-closed'));
+    if (els.btnPreview) els.btnPreview.addEventListener('click', () => document.body.classList.add('editor-closed'));
 
     // ============================================
-    // EXPORT STANDALONE HTML
+    // EXPORT
     // ============================================
-    els.btnExport.addEventListener('click', async () => {
+    if (els.btnExport) els.btnExport.addEventListener('click', () => {
         const html = buildStandaloneHTML();
         const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
         const link = document.createElement('a');
@@ -222,50 +336,77 @@
         const clientName = state.cliente || '[NOMBRE DEL CLIENTE]';
         const logoHTML = state.logo ? `<img id="clientLogoNav" class="client-logo-nav" src="${state.logo}" alt="Logo">` : '';
 
-        // Mockup items HTML (only visible ones)
+        // Cotización
+        let cotHTML = '';
+        if (state.cotItems.length > 0) {
+            let sumExh = 0, sumProd = 0;
+            const rows = state.cotItems.map(item => {
+                sumExh += item.totalExh;
+                sumProd += item.totalProd;
+                return `<tr><td>${item.cantidad}</td><td>${item.formato}${item.meses > 1 ? ' (' + item.meses + ' meses)' : ''}</td><td class="num">${formatMoney(item.puExh)}</td><td class="num">${item.puProd ? formatMoney(item.puProd) : '—'}</td><td class="num">${formatMoney(item.totalExh)}</td><td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td></tr>`;
+            }).join('');
+
+            cotHTML = `
+            <section id="cotizacion" class="cotizacion-section">
+                <div class="section-wrapper">
+                    <div class="section-header"><span class="section-number">03</span><h2 class="section-title">Cotización</h2><p class="section-subtitle">Propuesta económica personalizada</p></div>
+                    <div class="cot-table-wrapper">
+                        <table class="cot-table">
+                            <thead><tr><th>Cant.</th><th>Formato</th><th class="num">P.U. Exhibición</th><th class="num">P.U. Producción</th><th class="num">Total Exhibición</th><th class="num">Total Producción</th></tr></thead>
+                            <tbody>${rows}</tbody>
+                            <tfoot><tr><td colspan="4" style="text-align:right;font-weight:700;">TOTAL</td><td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumExh)}</strong></td><td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumProd)}</strong></td></tr></tfoot>
+                        </table>
+                    </div>
+                    <p class="formato-nota" style="margin-top:16px;">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+                </div>
+            </section>`;
+        }
+
+        // Mockups
         let mockupsHTML = '';
+        let mockItems = '';
         if (state.showTrenes && state.fotoTrenes) {
-            mockupsHTML += `
-            <div class="mockup-item">
-                <div class="mockup-image"><img src="${state.fotoTrenes}" alt="Trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes</span></div></div>
-                <p class="mockup-caption">Impacto visual en formaciones de trenes</p>
-            </div>`;
+            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoTrenes}" alt="Trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes</span></div></div><p class="mockup-caption">Impacto visual en formaciones de trenes</p></div>`;
         }
         if (state.showColectivos && state.fotoColectivos) {
-            mockupsHTML += `
-            <div class="mockup-item">
-                <div class="mockup-image"><img src="${state.fotoColectivos}" alt="Colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos</span></div></div>
-                <p class="mockup-caption">Presencia en lunetas y laterales de colectivos</p>
-            </div>`;
+            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivos}" alt="Colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos</span></div></div><p class="mockup-caption">Presencia en lunetas y laterales de colectivos</p></div>`;
+        }
+        if (mockItems) {
+            const mockNum = cotHTML ? '04' : '03';
+            mockupsHTML = `
+            <section id="mockups" class="mockup-section">
+                <div class="section-wrapper">
+                    <div class="mockup-header"><span class="section-number">${mockNum}</span><h2 class="section-title">Así se vería tu campaña</h2><p class="section-subtitle">Mockups de referencia para visualizar el impacto</p></div>
+                    <div class="mockup-grid">${mockItems}</div>
+                </div>
+            </section>`;
         }
 
-        const mockupsSectionHTML = mockupsHTML ? `
-        <section id="mockups" class="mockup-section">
-            <div class="section-wrapper">
-                <div class="mockup-header"><span class="section-number">03</span><h2 class="section-title">Así se vería tu campaña</h2><p class="section-subtitle">Mockups de referencia para visualizar el impacto</p></div>
-                <div class="mockup-grid">${mockupsHTML}</div>
-            </div>
-        </section>` : '';
+        // LED
+        let ledHTML = '';
+        if (state.showLed && state.fotoLed) {
+            let ledNum = '03';
+            if (cotHTML) ledNum = '04';
+            if (mockupsHTML) ledNum = '05';
+            if (cotHTML && mockupsHTML) ledNum = '05';
+            ledHTML = `
+            <section id="cobertura" class="cobertura-section">
+                <div class="section-wrapper">
+                    <div class="section-header"><span class="section-number">${ledNum}</span><h2 class="section-title">Cobertura Líneas LED</h2><p class="section-subtitle">Visualización de la red de pantallas digitales</p></div>
+                    <div class="cobertura-image"><img src="${state.fotoLed}" alt="Cobertura LED"></div>
+                </div>
+            </section>`;
+        }
 
-        const ledSectionHTML = (state.showLed && state.fotoLed) ? `
-        <section id="cobertura" class="cobertura-section">
-            <div class="section-wrapper">
-                <div class="section-header"><span class="section-number">04</span><h2 class="section-title">Cobertura Líneas LED</h2><p class="section-subtitle">Visualización de la red de pantallas digitales</p></div>
-                <div class="cobertura-image"><img src="${state.fotoLed}" alt="Cobertura LED"></div>
-            </div>
-        </section>` : '';
+        // Tablas formatos
+        const trenesRows = TARIFARIO.trenes.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
+        const colectivosRows = TARIFARIO.colectivos.map(f => `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`).join('');
 
-        // Tabla trenes
-        const trenesRows = TARIFARIO.trenes.map(f =>
-            `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`
-        ).join('');
-
-        // Tabla colectivos
-        const colectivosRows = TARIFARIO.colectivos.map(f =>
-            `<tr><td>${f.nombre}</td><td class="num">${formatMoney(f.exhibicion)}</td><td class="num">${f.produccion ? formatMoney(f.produccion) : '—'}</td></tr>`
-        ).join('');
-
-        const datosNum = ledSectionHTML ? '05' : (mockupsSectionHTML ? '04' : '03');
+        // Datos number
+        let datosNum = 3;
+        if (cotHTML) datosNum++;
+        if (mockupsHTML) datosNum++;
+        if (ledHTML) datosNum++;
 
         return `<!DOCTYPE html>
 <html lang="es">
@@ -320,26 +461,23 @@ ${getEmbeddedCSS()}
         <div class="section-header"><span class="section-number">02</span><h2 class="section-title">Formatos disponibles</h2><p class="section-subtitle">Desde una cenefa hasta una formación completa ploteada</p></div>
         <div class="formatos-content">
             <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚆 Trenes</h3>
-            <div class="formato-table-wrapper">
-                <table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${trenesRows}</tbody></table>
-            </div>
+            <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${trenesRows}</tbody></table></div>
             <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
             <br><br>
             <h3 style="text-align:center;margin-bottom:20px;font-family:var(--font-display);color:var(--navy);">🚌 Colectivos</h3>
-            <div class="formato-table-wrapper">
-                <table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${colectivosRows}</tbody></table>
-            </div>
+            <div class="formato-table-wrapper"><table class="formato-table"><thead><tr><th>Formato</th><th class="num">Exhibición mensual</th><th class="num">Producción</th></tr></thead><tbody>${colectivosRows}</tbody></table></div>
             <p class="formato-nota">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
         </div>
     </div>
 </section>
 
-${mockupsSectionHTML}
-${ledSectionHTML}
+${cotHTML}
+${mockupsHTML}
+${ledHTML}
 
 <section id="datos" class="datos">
     <div class="section-wrapper">
-        <div class="section-header"><span class="section-number">${datosNum}</span><h2 class="section-title">Datos que respaldan la inversión</h2><p class="section-subtitle">Números oficiales del Ministerio de Transporte</p></div>
+        <div class="section-header"><span class="section-number">${String(datosNum).padStart(2,'0')}</span><h2 class="section-title">Datos que respaldan la inversión</h2><p class="section-subtitle">Números oficiales del Ministerio de Transporte</p></div>
         <div class="datos-grid">
             <div class="dato-card"><div class="dato-number">175.9M</div><div class="dato-label">pasajeros/año Línea Roca</div><div class="dato-context">~482.000 pasajeros por día. 75 estaciones. 198 km.</div></div>
             <div class="dato-card"><div class="dato-number">17.5M</div><div class="dato-label">pasajeros/año Línea Belgrano Sur</div><div class="dato-context">~47.900 pasajeros por día. Dwell time de 70-77 min.</div></div>
@@ -376,7 +514,6 @@ ${ledSectionHTML}
     }
 
     function getEmbeddedCSS() {
-        // Minimal embedded CSS for standalone export
         return `:root{--blue:#008fd5;--blue-light:#e8f4fc;--blue-dark:#0069a8;--navy:#0a1628;--white:#fff;--gray-50:#f8fafc;--gray-100:#f1f5f9;--gray-200:#e2e8f0;--gray-300:#cbd5e1;--gray-400:#94a3b8;--gray-500:#64748b;--gray-600:#475569;--gray-700:#334155;--gray-800:#1e293b;--font-body:'Inter',sans-serif;--font-display:'Montserrat',sans-serif;--max-width:1200px;--section-padding:80px}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -428,6 +565,19 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
 .formato-table tbody tr:last-child td{border-bottom:none}
 .formato-table tbody tr:hover{background:var(--gray-50)}
 .formato-nota{font-size:0.8rem;color:var(--gray-400);margin-top:16px;text-align:center}
+.cotizacion-section{padding:var(--section-padding) 0;background:var(--white)}
+.cot-table-wrapper{background:var(--gray-50);border-radius:20px;border:1px solid var(--gray-200);padding:40px;overflow-x:auto}
+.cot-table{width:100%;border-collapse:collapse;font-size:0.9rem}
+.cot-table thead{background:var(--navy);color:var(--white)}
+.cot-table th{padding:16px 20px;font-weight:600;font-size:0.8rem;letter-spacing:0.05em;text-transform:uppercase;text-align:left}
+.cot-table th.num{text-align:right}
+.cot-table td{padding:16px 20px;border-bottom:1px solid var(--gray-200);color:var(--gray-700)}
+.cot-table td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;color:var(--gray-800)}
+.cot-table tbody tr:last-child td{border-bottom:none}
+.cot-table tbody tr:hover{background:var(--blue-light)}
+.cot-table tfoot{border-top:2px solid var(--navy)}
+.cot-table tfoot td{padding:18px 20px;font-weight:700;color:var(--navy);background:var(--gray-100)}
+.cot-table tfoot td.num{font-size:1.05rem;color:var(--blue)}
 .mockup-section{padding:var(--section-padding) 0;background:var(--white)}
 .mockup-header{text-align:center;margin-bottom:64px}
 .mockup-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px}
@@ -533,7 +683,6 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
         });
     }
 
-    // Smooth scroll
     document.querySelectorAll('.nav-link, .hero-actions .btn').forEach(link => {
         link.addEventListener('click', (e) => {
             const href = link.getAttribute('href');
@@ -550,7 +699,6 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
         });
     });
 
-    // Active nav on scroll
     const sections = document.querySelectorAll('section[id]');
     window.addEventListener('scroll', () => {
         const pos = window.scrollY + 200;
@@ -582,7 +730,7 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
     document.head.appendChild(particleStyle);
 
     // ============================================
-    // COUNTER ANIMATION
+    // COUNTER
     // ============================================
     function animateCounter(el, target, duration = 2000) {
         const start = performance.now();
@@ -610,6 +758,7 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
     // INIT
     // ============================================
     renderFormatoTables();
+    populateDropdown();
     initParticles();
     updateView();
 

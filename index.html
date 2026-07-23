@@ -18,6 +18,8 @@
         <button id="btnCloseEditor" class="btn-editor-close" title="Cerrar editor">✕</button>
     </div>
     <div class="editor-body">
+
+        <!-- DATOS CLIENTE -->
         <div class="editor-group">
             <label>Logo del cliente</label>
             <input type="file" id="uploadLogo" accept="image/*">
@@ -35,7 +37,44 @@
             <label>Teléfono</label>
             <input type="text" id="inputTel" placeholder="+54 11 XXXX-XXXX">
         </div>
+
         <hr class="editor-divider">
+
+        <!-- COTIZADOR -->
+        <div class="editor-section-title">📋 Cotización</div>
+        <div class="editor-group">
+            <label>Formato</label>
+            <select id="cotFormato">
+                <option value="">Seleccionar formato...</option>
+                <optgroup label="🚆 Trenes" id="optgroupTrenes"></optgroup>
+                <optgroup label="🚌 Colectivos" id="optgroupColectivos"></optgroup>
+            </select>
+        </div>
+        <div class="editor-group">
+            <label>Cantidad</label>
+            <input type="number" id="cotCantidad" min="1" value="1">
+        </div>
+        <div class="editor-group">
+            <label>Meses</label>
+            <input type="number" id="cotMeses" min="1" value="1">
+        </div>
+        <button id="btnAddCot" class="btn btn-primary btn-full" style="margin-bottom:16px;">➕ Agregar a cotización</button>
+
+        <div class="editor-cot-table-wrap">
+            <table class="editor-cot-table" id="editorCotTable">
+                <thead>
+                    <tr><th>Cant.</th><th>Formato</th><th>Total Exh.</th><th>Total Prod.</th><th></th></tr>
+                </thead>
+                <tbody id="editorCotBody">
+                    <tr class="empty-row"><td colspan="5">Sin items</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="editor-cot-totals" id="editorCotTotals"></div>
+
+        <hr class="editor-divider">
+
+        <!-- FOTOS -->
         <div class="editor-group">
             <label>Foto — Trenes</label>
             <input type="file" id="uploadTrenes" accept="image/*">
@@ -54,7 +93,6 @@
                 <span>Mostrar en propuesta</span>
             </label>
         </div>
-        <hr class="editor-divider">
         <div class="editor-group">
             <label>Foto — Cobertura Líneas LED</label>
             <input type="file" id="uploadLed" accept="image/*">
@@ -64,6 +102,7 @@
                 <span>Mostrar en propuesta</span>
             </label>
         </div>
+
         <div class="editor-actions">
             <button id="btnPreview" class="btn btn-secondary btn-full">👁️ Previsualizar</button>
             <button id="btnExport" class="btn btn-primary btn-full">⬇️ Exportar HTML</button>
@@ -90,6 +129,7 @@
         <a href="#inicio" class="nav-link active">Inicio</a>
         <a href="#oportunidad" class="nav-link">Oportunidad</a>
         <a href="#formatos" class="nav-link">Formatos</a>
+        <a href="#cotizacion" class="nav-link hidden" id="navCotizacion">Cotización</a>
         <a href="#mockups" class="nav-link hidden" id="navMockups">Galería</a>
         <a href="#datos" class="nav-link">Datos</a>
         <a href="#contacto" class="nav-link">Contacto</a>
@@ -198,11 +238,39 @@
     </div>
 </section>
 
+<!-- COTIZACIÓN (condicional) -->
+<section id="cotizacion" class="cotizacion-section hidden" data-section="cotizacion">
+    <div class="section-wrapper">
+        <div class="section-header reveal-up">
+            <span class="section-number" id="cotNumber">03</span>
+            <h2 class="section-title">Cotización</h2>
+            <p class="section-subtitle">Propuesta económica personalizada</p>
+        </div>
+        <div class="cot-table-wrapper reveal-up">
+            <table class="cot-table" id="cotTable">
+                <thead>
+                    <tr>
+                        <th>Cant.</th>
+                        <th>Formato</th>
+                        <th class="num">P.U. Exhibición</th>
+                        <th class="num">P.U. Producción</th>
+                        <th class="num">Total Exhibición</th>
+                        <th class="num">Total Producción</th>
+                    </tr>
+                </thead>
+                <tbody id="cotTableBody"></tbody>
+                <tfoot id="cotTableFoot"></tfoot>
+            </table>
+        </div>
+        <p class="formato-nota" style="margin-top:16px;">* Precios no incluyen IVA. Los costos de producción pueden variar según especificaciones.</p>
+    </div>
+</section>
+
 <!-- MOCKUPS (condicional) -->
 <section id="mockups" class="mockup-section hidden" data-section="mockups">
     <div class="section-wrapper">
         <div class="mockup-header reveal-up">
-            <span class="section-number">03</span>
+            <span class="section-number" id="mockNumber">04</span>
             <h2 class="section-title">Así se vería tu campaña</h2>
             <p class="section-subtitle">Mockups de referencia para visualizar el impacto</p>
         </div>
@@ -223,7 +291,7 @@
 <section id="cobertura" class="cobertura-section hidden" data-section="cobertura">
     <div class="section-wrapper">
         <div class="section-header reveal-up">
-            <span class="section-number">04</span>
+            <span class="section-number" id="ledNumber">05</span>
             <h2 class="section-title">Cobertura Líneas LED</h2>
             <p class="section-subtitle">Visualización de la red de pantallas digitales</p>
         </div>
@@ -237,7 +305,7 @@
 <section id="datos" class="datos">
     <div class="section-wrapper">
         <div class="section-header reveal-up">
-            <span class="section-number">05</span>
+            <span class="section-number" id="datosNumber">06</span>
             <h2 class="section-title">Datos que respaldan la inversión</h2>
             <p class="section-subtitle">Números oficiales del Ministerio de Transporte</p>
         </div>

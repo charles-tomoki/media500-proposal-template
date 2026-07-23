@@ -644,6 +644,111 @@ body:not(.editor-closed) #proposalView {
 .mockup-caption { padding: 20px 24px; font-size: 0.9rem; color: var(--gray-500); }
 
 /* ============================================
+   COTIZACIÓN
+   ============================================ */
+.cotizacion-section { padding: var(--section-padding) 0; background: var(--white); }
+.cot-table-wrapper {
+    background: var(--gray-50);
+    border-radius: 20px;
+    border: 1px solid var(--gray-200);
+    padding: 40px;
+    overflow-x: auto;
+}
+.cot-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+.cot-table thead { background: var(--navy); color: var(--white); }
+.cot-table th {
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: left;
+}
+.cot-table th.num { text-align: right; }
+.cot-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--gray-700);
+}
+.cot-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--gray-800);
+}
+.cot-table tbody tr:last-child td { border-bottom: none; }
+.cot-table tbody tr:hover { background: var(--blue-light); }
+.cot-table tfoot { border-top: 2px solid var(--navy); }
+.cot-table tfoot td {
+    padding: 18px 20px;
+    font-weight: 700;
+    color: var(--navy);
+    background: var(--gray-100);
+}
+.cot-table tfoot td.num { font-size: 1.05rem; color: var(--blue); }
+
+/* Editor cotizador */
+.editor-section-title {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.editor-cot-table-wrap {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+.editor-cot-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+}
+.editor-cot-table th {
+    padding: 10px 8px;
+    font-weight: 600;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-400);
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.editor-cot-table td {
+    padding: 10px 8px;
+    color: var(--gray-300);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.editor-cot-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.editor-cot-table .btn-delete-editor {
+    background: transparent;
+    border: none;
+    color: var(--gray-500);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all var(--transition-fast);
+}
+.editor-cot-table .btn-delete-editor:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+.editor-cot-totals {
+    font-size: 0.8rem;
+    color: var(--gray-300);
+    text-align: right;
+    padding: 8px 4px;
+}
+.editor-cot-totals strong { color: var(--white); font-size: 0.9rem; }
+
+/* ============================================
    COBERTURA LED
    ============================================ */
 .cobertura-section { padding: var(--section-padding) 0; background: var(--gray-50); }
