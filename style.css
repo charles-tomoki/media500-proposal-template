@@ -507,10 +507,11 @@ body:not(.editor-closed) #proposalView {
    ============================================ */
 .oportunidad { padding: var(--section-padding) 0; background: var(--white); }
 .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 340px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
     gap: 24px;
-    place-content: center;
 }
 .info-card {
     background: var(--gray-50);
