@@ -510,8 +510,7 @@ body:not(.editor-closed) #proposalView {
     display: grid;
     grid-template-columns: repeat(3, 340px);
     gap: 24px;
-    width: fit-content;
-    margin: 0 auto;
+    place-content: center;
 }
 .info-card {
     background: var(--gray-50);
