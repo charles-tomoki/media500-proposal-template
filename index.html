@@ -117,11 +117,20 @@
             </label>
         </div>
         <div class="editor-group">
-            <label>Foto — Colectivos (diferencial / panorámico)</label>
+            <label>Foto — Colectivos (diferencial)</label>
             <input type="file" id="uploadColectivosDif" accept="image/*">
             <div class="editor-preview" id="previewColectivosDif"></div>
             <label class="toggle-row">
                 <input type="checkbox" id="toggleColectivosDif" checked>
+                <span>Mostrar en propuesta</span>
+            </label>
+        </div>
+        <div class="editor-group">
+            <label>Foto — Colectivos (panorámico)</label>
+            <input type="file" id="uploadColectivosPan" accept="image/*">
+            <div class="editor-preview" id="previewColectivosPan"></div>
+            <label class="toggle-row">
+                <input type="checkbox" id="toggleColectivosPan" checked>
                 <span>Mostrar en propuesta</span>
             </label>
         </div>
@@ -340,7 +349,11 @@
             </div>
             <div class="mockup-item reveal-scale hidden" data-mockup="colectivosDif">
                 <div class="mockup-image"><img id="imgColectivosDif" src="" alt="Diferencial colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Diferencial</span></div></div>
-                <p class="mockup-caption">Formato diferencial / panorámico</p>
+                <p class="mockup-caption">Formato diferencial</p>
+            </div>
+            <div class="mockup-item reveal-scale hidden" data-mockup="colectivosPan">
+                <div class="mockup-image"><img id="imgColectivosPan" src="" alt="Panorámico colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Panorámico</span></div></div>
+                <p class="mockup-caption">Panorámico (ventanas + luneta)</p>
             </div>
             <div class="mockup-item reveal-scale hidden" data-mockup="colectivosInt">
                 <div class="mockup-image"><img id="imgColectivosInt" src="" alt="Interior colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Interior</span></div></div>
