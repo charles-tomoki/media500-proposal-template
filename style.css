@@ -506,11 +506,14 @@ body:not(.editor-closed) #proposalView {
    OPORTUNIDAD
    ============================================ */
 .oportunidad { padding: var(--section-padding) 0; background: var(--white); }
+.cards-wrapper {
+    text-align: center;
+}
 .cards-grid {
-    display: grid;
+    display: inline-grid;
     grid-template-columns: repeat(3, 320px);
     gap: 24px;
-    justify-content: center;
+    text-align: left;
 }
 .info-card {
     width: 320px;
