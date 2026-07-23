@@ -36,11 +36,18 @@
         <div class="editor-section-title">📋 Cotización</div>
         <div class="editor-group">
             <label>Formato</label>
-            <select id="cotFormato">
-                <option value="">Seleccionar formato...</option>
-                <optgroup label="🚆 Trenes" id="optgroupTrenes"></optgroup>
-                <optgroup label="🚌 Colectivos" id="optgroupColectivos"></optgroup>
-            </select>
+            <div class="custom-dropdown" id="cotFormatoDropdown">
+                <div class="custom-dropdown-trigger" id="cotFormatoTrigger">Seleccionar formato...</div>
+                <div class="custom-dropdown-menu" id="cotFormatoMenu">
+                    <div class="custom-dropdown-group" id="dropdownGroupTrenes">
+                        <div class="custom-dropdown-group-label">🚆 Trenes</div>
+                    </div>
+                    <div class="custom-dropdown-group" id="dropdownGroupColectivos">
+                        <div class="custom-dropdown-group-label">🚌 Colectivos</div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="cotFormato" value="">
         </div>
         <div class="editor-group">
             <label>Cantidad</label>

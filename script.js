@@ -85,20 +85,57 @@
     }
 
     // ============================================
-    // EDITOR DROPDOWN
+    // EDITOR DROPDOWN (CUSTOM)
     // ============================================
     function populateDropdown() {
-        const optgroupTrenes = document.getElementById('optgroupTrenes');
-        const optgroupColectivos = document.getElementById('optgroupColectivos');
-        if (!optgroupTrenes || !optgroupColectivos) return;
+        const groupTrenes = document.getElementById('dropdownGroupTrenes');
+        const groupColectivos = document.getElementById('dropdownGroupColectivos');
+        const cotFormato = document.getElementById('cotFormato');
+        const trigger = document.getElementById('cotFormatoTrigger');
+        const menu = document.getElementById('cotFormatoMenu');
+        if (!groupTrenes || !groupColectivos || !cotFormato) return;
 
-        optgroupTrenes.innerHTML = TARIFARIO.trenes.map((f, i) =>
-            `<option value="trenes-${i}">${f.nombre}</option>`
-        ).join('');
+        const fmt = (n) => n.toLocaleString('es-AR');
 
-        optgroupColectivos.innerHTML = TARIFARIO.colectivos.map((f, i) =>
-            `<option value="colectivos-${i}">${f.nombre}</option>`
-        ).join('');
+        function renderItem(f, cat, idx) {
+            const val = `${cat}-${idx}`;
+            const div = document.createElement('div');
+            div.className = 'custom-dropdown-item';
+            div.dataset.value = val;
+            div.innerHTML = `<span>${f.nombre}</span><span class="item-price">Exh. $${fmt(f.exhibicion)}</span>`;
+            div.addEventListener('click', (e) => {
+                e.stopPropagation();
+                cotFormato.value = val;
+                trigger.textContent = f.nombre;
+                menu.querySelectorAll('.custom-dropdown-item').forEach(it => it.classList.remove('selected'));
+                div.classList.add('selected');
+                menu.classList.remove('open');
+                trigger.classList.remove('active');
+            });
+            return div;
+        }
+
+        // Limpiar items anteriores (mantener labels)
+        groupTrenes.querySelectorAll('.custom-dropdown-item').forEach(el => el.remove());
+        groupColectivos.querySelectorAll('.custom-dropdown-item').forEach(el => el.remove());
+
+        TARIFARIO.trenes.forEach((f, i) => groupTrenes.appendChild(renderItem(f, 'trenes', i)));
+        TARIFARIO.colectivos.forEach((f, i) => groupColectivos.appendChild(renderItem(f, 'colectivos', i)));
+
+        // Click en trigger para abrir/cerrar
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = menu.classList.toggle('open');
+            trigger.classList.toggle('active', isOpen);
+        });
+
+        // Cerrar al hacer click afuera
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('cotFormatoDropdown').contains(e.target)) {
+                menu.classList.remove('open');
+                trigger.classList.remove('active');
+            }
+        });
     }
 
     // ============================================
