@@ -815,13 +815,23 @@ body:not(.editor-closed) #proposalView {
     background: rgba(255,255,255,0.05);
     border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.1);
-    overflow: hidden;
+    overflow-x: auto;
+    margin-bottom: 12px;
+}
+.editor-cot-section {
+    padding: 0 28px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 8px;
+    padding-top: 20px;
+}
+.editor-cot-section .editor-section-title {
     margin-bottom: 12px;
 }
 .editor-cot-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
+    table-layout: fixed;
 }
 .editor-cot-table th {
     padding: 12px 10px;
@@ -833,6 +843,13 @@ body:not(.editor-closed) #proposalView {
     text-align: left;
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
+.editor-cot-table th:nth-child(1) { width: 60px; }
+.editor-cot-table th:nth-child(2) { width: auto; }
+.editor-cot-table th:nth-child(3) { width: 130px; }
+.editor-cot-table th:nth-child(4) { width: 130px; }
+.editor-cot-table th:nth-child(5) { width: 140px; }
+.editor-cot-table th:nth-child(6) { width: 140px; }
+.editor-cot-table th:nth-child(7) { width: 50px; }
 .editor-cot-table td {
     padding: 10px 10px;
     color: var(--gray-300);
@@ -852,6 +869,7 @@ body:not(.editor-closed) #proposalView {
 .editor-cot-table .btn-delete-editor:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
 .editor-cot-input {
     width: 100%;
+    min-width: 100px;
     padding: 6px 8px;
     border: 1.5px solid rgba(255,255,255,0.1);
     border-radius: 5px;
