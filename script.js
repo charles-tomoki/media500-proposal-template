@@ -405,15 +405,22 @@
 
         if (hasCot && view.cotTableBody) {
             let sumExh = 0, sumProd = 0;
-            view.cotTableBody.innerHTML = state.cotItems.map(item => {
+            const editorOpen = !document.body.classList.contains('editor-closed');
+            view.cotTableBody.innerHTML = state.cotItems.map((item, i) => {
                 sumExh += item.totalExh;
                 sumProd += item.totalProd;
+                const puExhCell = editorOpen
+                    ? `<input type="number" class="cot-inline-input" data-idx="${i}" data-field="puExh" value="${item.puExh}" step="1000">`
+                    : formatMoney(item.puExh);
+                const puProdCell = editorOpen
+                    ? `<input type="number" class="cot-inline-input" data-idx="${i}" data-field="puProd" value="${item.puProd || 0}" step="1000">`
+                    : (item.puProd ? formatMoney(item.puProd) : '—');
                 return `
                     <tr>
                         <td>${item.cantidad}</td>
                         <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + ' meses)</span>' : ''}</td>
-                        <td class="num">${formatMoney(item.puExh)}</td>
-                        <td class="num">${item.puProd ? formatMoney(item.puProd) : '—'}</td>
+                        <td class="num">${puExhCell}</td>
+                        <td class="num">${puProdCell}</td>
                         <td class="num">${formatMoney(item.totalExh)}</td>
                         <td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td>
                     </tr>
@@ -428,6 +435,26 @@
                         <td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumProd)}</strong></td>
                     </tr>
                 `;
+            }
+
+            // Attach inline input handlers (only when editor is open)
+            if (editorOpen) {
+                view.cotTableBody.querySelectorAll('.cot-inline-input').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        const idx = parseInt(e.target.dataset.idx);
+                        const field = e.target.dataset.field;
+                        const val = parseFloat(e.target.value) || 0;
+                        const item = state.cotItems[idx];
+                        if (field === 'puExh') {
+                            item.puExh = val;
+                            item.totalExh = val * item.cantidad * item.meses;
+                        } else if (field === 'puProd') {
+                            item.puProd = val;
+                            item.totalProd = val * item.cantidad;
+                        }
+                        updateView();
+                    });
+                });
             }
         }
 
@@ -558,9 +585,9 @@
     if (els.uploadOtros) els.uploadOtros.addEventListener('change', async (e) => { state.fotoOtros = await readFile(e.target.files[0]); setPreview(els.previewOtros, state.fotoOtros); updateView(); });
     if (els.toggleOtros) els.toggleOtros.addEventListener('change', (e) => { state.showOtros = e.target.checked; updateView(); });
 
-    if (els.btnCloseEditor) els.btnCloseEditor.addEventListener('click', () => document.body.classList.add('editor-closed'));
-    if (els.btnOpenEditor) els.btnOpenEditor.addEventListener('click', () => document.body.classList.remove('editor-closed'));
-    if (els.btnPreview) els.btnPreview.addEventListener('click', () => document.body.classList.add('editor-closed'));
+    if (els.btnCloseEditor) els.btnCloseEditor.addEventListener('click', () => { document.body.classList.add('editor-closed'); updateView(); });
+    if (els.btnOpenEditor) els.btnOpenEditor.addEventListener('click', () => { document.body.classList.remove('editor-closed'); updateView(); });
+    if (els.btnPreview) els.btnPreview.addEventListener('click', () => { document.body.classList.add('editor-closed'); updateView(); });
 
     // ============================================
     // EXPORT
