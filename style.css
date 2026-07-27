@@ -831,10 +831,10 @@ body:not(.editor-closed) #proposalView {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    table-layout: fixed;
+    table-layout: auto;
 }
 .editor-cot-table th {
-    padding: 12px 10px;
+    padding: 10px 8px;
     font-weight: 600;
     font-size: 0.7rem;
     text-transform: uppercase;
@@ -842,21 +842,22 @@ body:not(.editor-closed) #proposalView {
     color: var(--gray-400);
     text-align: left;
     border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
 }
-.editor-cot-table th:nth-child(1) { width: 55px; }
-.editor-cot-table th:nth-child(2) { width: auto; }
-.editor-cot-table th:nth-child(3) { width: 150px; }
-.editor-cot-table th:nth-child(4) { width: 150px; }
-.editor-cot-table th:nth-child(5) { width: 150px; }
-.editor-cot-table th:nth-child(6) { width: 150px; }
-.editor-cot-table th:nth-child(7) { width: 45px; }
+.editor-cot-table th:nth-child(1) { width: 50px; }
+.editor-cot-table th:nth-child(2) { /* auto */ }
+.editor-cot-table th:nth-child(3),
+.editor-cot-table th:nth-child(4),
+.editor-cot-table th:nth-child(5),
+.editor-cot-table th:nth-child(6) { width: 1%; white-space: nowrap; }
+.editor-cot-table th:nth-child(7) { width: 40px; }
 .editor-cot-table td {
-    padding: 8px 6px;
+    padding: 6px 6px;
     color: var(--gray-300);
     border-bottom: 1px solid rgba(255,255,255,0.05);
     box-sizing: border-box;
 }
-.editor-cot-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.editor-cot-table td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .editor-cot-table .btn-delete-editor {
     background: transparent;
     border: none;
