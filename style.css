@@ -59,14 +59,14 @@ body:not(.editor-closed) .editor-fab { display: none !important; }
     backdrop-filter: blur(8px);
 }
 .editor-panel-inner {
-    width: min(780px, 95vw);
-    max-height: 90vh;
+    width: min(1100px, 98vw);
+    max-height: 95vh;
     background: var(--navy);
     color: var(--white);
     border-radius: 16px;
     overflow-y: auto;
     box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     display: flex;
     flex-direction: column;
 }
@@ -821,12 +821,12 @@ body:not(.editor-closed) #proposalView {
 .editor-cot-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
 }
 .editor-cot-table th {
-    padding: 10px 8px;
+    padding: 12px 10px;
     font-weight: 600;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--gray-400);
@@ -834,7 +834,7 @@ body:not(.editor-closed) #proposalView {
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 .editor-cot-table td {
-    padding: 10px 8px;
+    padding: 10px 10px;
     color: var(--gray-300);
     border-bottom: 1px solid rgba(255,255,255,0.05);
 }
@@ -844,21 +844,21 @@ body:not(.editor-closed) #proposalView {
     border: none;
     color: var(--gray-500);
     cursor: pointer;
-    font-size: 0.9rem;
-    padding: 2px 6px;
+    font-size: 1rem;
+    padding: 4px 8px;
     border-radius: 4px;
     transition: all var(--transition-fast);
 }
 .editor-cot-table .btn-delete-editor:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
 .editor-cot-input {
     width: 100%;
-    padding: 4px 6px;
+    padding: 6px 8px;
     border: 1.5px solid rgba(255,255,255,0.1);
     border-radius: 5px;
     background: rgba(255,255,255,0.06);
     color: var(--white);
     font-family: var(--font-body);
-    font-size: 0.72rem;
+    font-size: 0.82rem;
     font-variant-numeric: tabular-nums;
     text-align: right;
     transition: all var(--transition-fast);
