@@ -831,7 +831,7 @@ body:not(.editor-closed) #proposalView {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
-    table-layout: auto;
+    table-layout: fixed;
 }
 .editor-cot-table th {
     padding: 10px 8px;
@@ -845,11 +845,11 @@ body:not(.editor-closed) #proposalView {
     white-space: nowrap;
 }
 .editor-cot-table th:nth-child(1) { width: 50px; }
-.editor-cot-table th:nth-child(2) { /* auto */ }
+.editor-cot-table th:nth-child(2) { /* auto fill */ }
 .editor-cot-table th:nth-child(3),
 .editor-cot-table th:nth-child(4),
 .editor-cot-table th:nth-child(5),
-.editor-cot-table th:nth-child(6) { width: 1%; white-space: nowrap; }
+.editor-cot-table th:nth-child(6) { width: 120px; }
 .editor-cot-table th:nth-child(7) { width: 40px; }
 .editor-cot-table td {
     padding: 6px 6px;

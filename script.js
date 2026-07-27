@@ -45,26 +45,20 @@
     const state = {
         cliente: '',
         logo: null,
-        fotoTrenes: null,
-        fotoTrenesPyV: null,
-        fotoTrenesCenefas: null,
-        fotoColectivos: null,
-        fotoColectivosDif: null,
-        fotoColectivosPan: null,
-        fotoColectivosInt: null,
-        fotoLed: null,
-        fotoTotems: null,
-        fotoOtros: null,
-        showTrenes: true,
-        showTrenesPyV: true,
-        showTrenesCenefas: true,
-        showColectivos: true,
-        showColectivosDif: true,
-        showColectivosPan: true,
-        showColectivosInt: true,
-        showLed: true,
-        showTotems: true,
-        showOtros: true,
+        // 18 fotos — una por formato del tarifario
+        fotoTrenesParcial7: null, fotoTrenesFull1: null, fotoTrenesMixto16: null,
+        fotoTrenesFull7: null, fotoTrenesCenefas230: null, fotoTrenesCenefas115: null,
+        fotoTrenesParcial3: null, fotoTrenesMixto12: null, fotoTrenesFull3: null,
+        fotoColectivosLunetaCABA: null, fotoColectivosLunetaGBA: null, fotoColectivosDif: null,
+        fotoColectivosLunetaInt: null, fotoColectivosCenefas: null, fotoColectivosBackFull: null,
+        fotoColectivosPan: null, fotoColectivosLed: null, fotoTotems: null,
+        // 18 toggles
+        showTrenesParcial7: true, showTrenesFull1: true, showTrenesMixto16: true,
+        showTrenesFull7: true, showTrenesCenefas230: true, showTrenesCenefas115: true,
+        showTrenesParcial3: true, showTrenesMixto12: true, showTrenesFull3: true,
+        showColectivosLunetaCABA: true, showColectivosLunetaGBA: true, showColectivosDif: true,
+        showColectivosLunetaInt: true, showColectivosCenefas: true, showColectivosBackFull: true,
+        showColectivosPan: true, showColectivosLed: true, showTotems: true,
         showFormatos: false,
         cotItems: [],
         customPrices: { trenes: {}, colectivos: {} }
@@ -344,21 +338,12 @@
     const view = {
         clientNameDisplay: document.getElementById('clientNameDisplay'),
         clientLogoNav: document.getElementById('clientLogoNav'),
-        imgTrenes: document.getElementById('imgTrenes'),
-        imgTrenesPyV: document.getElementById('imgTrenesPyV'),
-        imgTrenesCenefas: document.getElementById('imgTrenesCenefas'),
-        imgColectivos: document.getElementById('imgColectivos'),
-        imgColectivosDif: document.getElementById('imgColectivosDif'),
-        imgColectivosPan: document.getElementById('imgColectivosPan'),
-        imgColectivosInt: document.getElementById('imgColectivosInt'),
-        imgLed: document.getElementById('imgLed'),
-        imgTotems: document.getElementById('imgTotems'),
-        imgOtros: document.getElementById('imgOtros'),
         formatosSection: document.getElementById('formatos'),
         cotizacionSection: document.getElementById('cotizacion'),
         cotTableBody: document.getElementById('cotTableBody'),
         cotTableFoot: document.getElementById('cotTableFoot'),
         mockupSection: document.getElementById('mockups'),
+        mockupGrid: document.getElementById('mockupGrid'),
         coberturaSection: document.getElementById('cobertura'),
         navCotizacion: document.getElementById('navCotizacion'),
         navMockups: document.getElementById('navMockups'),
@@ -366,6 +351,28 @@
         mockNumber: document.getElementById('mockNumber'),
         ledNumber: document.getElementById('ledNumber'),
     };
+
+    // 18 photo slot definitions — maps state keys to HTML element IDs
+    const PHOTO_SLOTS = [
+        { key: 'TrenesParcial7', label: 'Ploteo Parcial (7 coches PyV)', tag: 'Trenes · PyV 7 coches', caption: 'Ploteo parcial en puertas y ventanas' },
+        { key: 'TrenesFull1', label: 'Ploteo Full (1 coche)', tag: 'Trenes · Full 1 coche', caption: 'Ploteo full en un coche' },
+        { key: 'TrenesMixto16', label: 'Ploteo Mixto (1 Full + 6 PyV)', tag: 'Trenes · Mixto 1+6', caption: 'Ploteo mixto: 1 full + 6 parciales' },
+        { key: 'TrenesFull7', label: 'Full Formación Completa (7 coches)', tag: 'Trenes · Full 7 coches', caption: 'Formación completa ploteada' },
+        { key: 'TrenesCenefas230', label: 'Cenefas Interiores (2×0.30 m)', tag: 'Trenes · Cenefas 2×0.30', caption: 'Cenefas interiores en coches' },
+        { key: 'TrenesCenefas115', label: 'Cenefas Interiores (1×0.15 m)', tag: 'Trenes · Cenefas 1×0.15', caption: 'Cenefas interiores en coches' },
+        { key: 'TrenesParcial3', label: 'Ploteo Parcial (3 coches PyV)', tag: 'Trenes · PyV 3 coches', caption: 'Ploteo parcial en 3 coches' },
+        { key: 'TrenesMixto12', label: 'Ploteo Mixto (1 Full + 2 PyV)', tag: 'Trenes · Mixto 1+2', caption: 'Ploteo mixto: 1 full + 2 parciales' },
+        { key: 'TrenesFull3', label: 'Ploteo Full (3 coches)', tag: 'Trenes · Full 3 coches', caption: 'Ploteo full en 3 coches' },
+        { key: 'ColectivosLunetaCABA', label: 'Luneta Premium CABA', tag: 'Colectivos · Luneta CABA', caption: 'Luneta premium en unidades' },
+        { key: 'ColectivosLunetaGBA', label: 'Luneta Standard GBA', tag: 'Colectivos · Luneta GBA', caption: 'Luneta standard en unidades' },
+        { key: 'ColectivosDif', label: 'Diferencial', tag: 'Colectivos · Diferencial', caption: 'Formato diferencial' },
+        { key: 'ColectivosLunetaInt', label: 'Luneta Interior (Cba/Ros/Mza/SFe)', tag: 'Colectivos · Luneta Interior', caption: 'Luneta interior en unidades' },
+        { key: 'ColectivosCenefas', label: 'Cenefas Interiores (colectivos)', tag: 'Colectivos · Cenefas', caption: 'Cenefas y publicidad interior' },
+        { key: 'ColectivosBackFull', label: 'Back Full', tag: 'Colectivos · Back Full', caption: 'Back full en unidades' },
+        { key: 'ColectivosPan', label: 'Panorámico (ventanas + luneta)', tag: 'Colectivos · Panorámico', caption: 'Panorámico: ventanas + luneta' },
+        { key: 'ColectivosLed', label: 'Luneta LED', tag: 'Pantallas LED', caption: 'Pantallas digitales en estaciones' },
+        { key: 'Totems', label: 'Tótems UBA', tag: 'Tótems UBA', caption: 'Tótems digitales universitarios' },
+    ];
 
     function readFile(file) {
         return new Promise((resolve) => {
@@ -437,40 +444,24 @@
             }
         }
 
-        // Mockups
-        const mockupItems = document.querySelectorAll('[data-mockup]');
-        mockupItems.forEach(item => {
-            const type = item.dataset.mockup;
-            let show = false;
-            if (type === 'trenes') show = state.showTrenes && state.fotoTrenes;
-            if (type === 'trenesPyV') show = state.showTrenesPyV && state.fotoTrenesPyV;
-            if (type === 'trenesCenefas') show = state.showTrenesCenefas && state.fotoTrenesCenefas;
-            if (type === 'colectivos') show = state.showColectivos && state.fotoColectivos;
-            if (type === 'colectivosDif') show = state.showColectivosDif && state.fotoColectivosDif;
-            if (type === 'colectivosPan') show = state.showColectivosPan && state.fotoColectivosPan;
-            if (type === 'colectivosInt') show = state.showColectivosInt && state.fotoColectivosInt;
-            if (type === 'led') show = state.showLed && state.fotoLed;
-            if (type === 'totems') show = state.showTotems && state.fotoTotems;
-            if (type === 'otros') show = state.showOtros && state.fotoOtros;
-            item.classList.toggle('hidden', !show);
-        });
-        const anyMockups = [
-            state.showTrenes && state.fotoTrenes,
-            state.showTrenesPyV && state.fotoTrenesPyV,
-            state.showTrenesCenefas && state.fotoTrenesCenefas,
-            state.showColectivos && state.fotoColectivos,
-            state.showColectivosDif && state.fotoColectivosDif,
-            state.showColectivosPan && state.fotoColectivosPan,
-            state.showColectivosInt && state.fotoColectivosInt,
-            state.showLed && state.fotoLed,
-            state.showTotems && state.fotoTotems,
-            state.showOtros && state.fotoOtros
-        ].some(Boolean);
+        // Mockups — dynamic from PHOTO_SLOTS
+        if (view.mockupGrid) {
+            let html = '';
+            PHOTO_SLOTS.forEach(slot => {
+                const fotoKey = 'foto' + slot.key;
+                const showKey = 'show' + slot.key;
+                if (state[showKey] && state[fotoKey]) {
+                    html += `<div class="mockup-item reveal-scale"><div class="mockup-image"><img src="${state[fotoKey]}" alt="${slot.label}"><div class="mockup-overlay"><span class="mockup-tag">${slot.tag}</span></div></div><p class="mockup-caption">${slot.caption}</p></div>`;
+                }
+            });
+            view.mockupGrid.innerHTML = html;
+        }
+        const anyMockups = PHOTO_SLOTS.some(slot => state['show' + slot.key] && state['foto' + slot.key]);
         if (view.mockupSection) view.mockupSection.classList.toggle('hidden', !anyMockups);
         if (view.navMockups) view.navMockups.classList.toggle('hidden', !anyMockups);
 
-        // Cobertura LED section (now part of mockups, but keep separate section if needed)
-        const showLedSection = state.showLed && state.fotoLed;
+        // Cobertura LED
+        const showLedSection = state.showColectivosLed && state.fotoColectivosLed;
         if (view.coberturaSection) view.coberturaSection.classList.toggle('hidden', !showLedSection);
 
         // Formatos section visibility
@@ -492,36 +483,6 @@
         uploadLogo: document.getElementById('uploadLogo'),
         previewLogo: document.getElementById('previewLogo'),
         inputCliente: document.getElementById('inputCliente'),
-        uploadTrenes: document.getElementById('uploadTrenes'),
-        previewTrenes: document.getElementById('previewTrenes'),
-        toggleTrenes: document.getElementById('toggleTrenes'),
-        uploadTrenesPyV: document.getElementById('uploadTrenesPyV'),
-        previewTrenesPyV: document.getElementById('previewTrenesPyV'),
-        toggleTrenesPyV: document.getElementById('toggleTrenesPyV'),
-        uploadTrenesCenefas: document.getElementById('uploadTrenesCenefas'),
-        previewTrenesCenefas: document.getElementById('previewTrenesCenefas'),
-        toggleTrenesCenefas: document.getElementById('toggleTrenesCenefas'),
-        uploadColectivos: document.getElementById('uploadColectivos'),
-        previewColectivos: document.getElementById('previewColectivos'),
-        toggleColectivos: document.getElementById('toggleColectivos'),
-        uploadColectivosDif: document.getElementById('uploadColectivosDif'),
-        previewColectivosDif: document.getElementById('previewColectivosDif'),
-        toggleColectivosDif: document.getElementById('toggleColectivosDif'),
-        uploadColectivosPan: document.getElementById('uploadColectivosPan'),
-        previewColectivosPan: document.getElementById('previewColectivosPan'),
-        toggleColectivosPan: document.getElementById('toggleColectivosPan'),
-        uploadColectivosInt: document.getElementById('uploadColectivosInt'),
-        previewColectivosInt: document.getElementById('previewColectivosInt'),
-        toggleColectivosInt: document.getElementById('toggleColectivosInt'),
-        uploadLed: document.getElementById('uploadLed'),
-        previewLed: document.getElementById('previewLed'),
-        toggleLed: document.getElementById('toggleLed'),
-        uploadTotems: document.getElementById('uploadTotems'),
-        previewTotems: document.getElementById('previewTotems'),
-        toggleTotems: document.getElementById('toggleTotems'),
-        uploadOtros: document.getElementById('uploadOtros'),
-        previewOtros: document.getElementById('previewOtros'),
-        toggleOtros: document.getElementById('toggleOtros'),
         toggleFormatos: document.getElementById('toggleFormatos'),
         btnCloseEditor: document.getElementById('btnCloseEditor'),
         btnOpenEditor: document.getElementById('btnOpenEditor'),
@@ -531,38 +492,17 @@
 
     if (els.uploadLogo) els.uploadLogo.addEventListener('change', async (e) => { state.logo = await readFile(e.target.files[0]); setPreview(els.previewLogo, state.logo); updateView(); });
     if (els.inputCliente) els.inputCliente.addEventListener('input', (e) => { state.cliente = e.target.value; updateView(); });
-    if (els.inputEmail) els.inputEmail.addEventListener('input', (e) => { state.email = e.target.value; updateView(); });
-    if (els.inputTel) els.inputTel.addEventListener('input', (e) => { state.tel = e.target.value; updateView(); });
 
-    if (els.uploadTrenes) els.uploadTrenes.addEventListener('change', async (e) => { state.fotoTrenes = await readFile(e.target.files[0]); setPreview(els.previewTrenes, state.fotoTrenes); updateView(); });
-    if (els.toggleTrenes) els.toggleTrenes.addEventListener('change', (e) => { state.showTrenes = e.target.checked; updateView(); });
-
-    if (els.uploadTrenesPyV) els.uploadTrenesPyV.addEventListener('change', async (e) => { state.fotoTrenesPyV = await readFile(e.target.files[0]); setPreview(els.previewTrenesPyV, state.fotoTrenesPyV); updateView(); });
-    if (els.toggleTrenesPyV) els.toggleTrenesPyV.addEventListener('change', (e) => { state.showTrenesPyV = e.target.checked; updateView(); });
-
-    if (els.uploadTrenesCenefas) els.uploadTrenesCenefas.addEventListener('change', async (e) => { state.fotoTrenesCenefas = await readFile(e.target.files[0]); setPreview(els.previewTrenesCenefas, state.fotoTrenesCenefas); updateView(); });
-    if (els.toggleTrenesCenefas) els.toggleTrenesCenefas.addEventListener('change', (e) => { state.showTrenesCenefas = e.target.checked; updateView(); });
-
-    if (els.uploadColectivos) els.uploadColectivos.addEventListener('change', async (e) => { state.fotoColectivos = await readFile(e.target.files[0]); setPreview(els.previewColectivos, state.fotoColectivos); updateView(); });
-    if (els.toggleColectivos) els.toggleColectivos.addEventListener('change', (e) => { state.showColectivos = e.target.checked; updateView(); });
-
-    if (els.uploadColectivosDif) els.uploadColectivosDif.addEventListener('change', async (e) => { state.fotoColectivosDif = await readFile(e.target.files[0]); setPreview(els.previewColectivosDif, state.fotoColectivosDif); updateView(); });
-    if (els.toggleColectivosDif) els.toggleColectivosDif.addEventListener('change', (e) => { state.showColectivosDif = e.target.checked; updateView(); });
-
-    if (els.uploadColectivosPan) els.uploadColectivosPan.addEventListener('change', async (e) => { state.fotoColectivosPan = await readFile(e.target.files[0]); setPreview(els.previewColectivosPan, state.fotoColectivosPan); updateView(); });
-    if (els.toggleColectivosPan) els.toggleColectivosPan.addEventListener('change', (e) => { state.showColectivosPan = e.target.checked; updateView(); });
-
-    if (els.uploadColectivosInt) els.uploadColectivosInt.addEventListener('change', async (e) => { state.fotoColectivosInt = await readFile(e.target.files[0]); setPreview(els.previewColectivosInt, state.fotoColectivosInt); updateView(); });
-    if (els.toggleColectivosInt) els.toggleColectivosInt.addEventListener('change', (e) => { state.showColectivosInt = e.target.checked; updateView(); });
-
-    if (els.uploadLed) els.uploadLed.addEventListener('change', async (e) => { state.fotoLed = await readFile(e.target.files[0]); setPreview(els.previewLed, state.fotoLed); updateView(); });
-    if (els.toggleLed) els.toggleLed.addEventListener('change', (e) => { state.showLed = e.target.checked; updateView(); });
-
-    if (els.uploadTotems) els.uploadTotems.addEventListener('change', async (e) => { state.fotoTotems = await readFile(e.target.files[0]); setPreview(els.previewTotems, state.fotoTotems); updateView(); });
-    if (els.toggleTotems) els.toggleTotems.addEventListener('change', (e) => { state.showTotems = e.target.checked; updateView(); });
-
-    if (els.uploadOtros) els.uploadOtros.addEventListener('change', async (e) => { state.fotoOtros = await readFile(e.target.files[0]); setPreview(els.previewOtros, state.fotoOtros); updateView(); });
-    if (els.toggleOtros) els.toggleOtros.addEventListener('change', (e) => { state.showOtros = e.target.checked; updateView(); });
+    // Dynamic photo slot listeners — one upload + one toggle per slot
+    PHOTO_SLOTS.forEach(slot => {
+        const uploadEl = document.getElementById('upload' + slot.key);
+        const previewEl = document.getElementById('preview' + slot.key);
+        const toggleEl = document.getElementById('toggle' + slot.key);
+        const fotoKey = 'foto' + slot.key;
+        const showKey = 'show' + slot.key;
+        if (uploadEl) uploadEl.addEventListener('change', async (e) => { state[fotoKey] = await readFile(e.target.files[0]); setPreview(previewEl, state[fotoKey]); updateView(); });
+        if (toggleEl) toggleEl.addEventListener('change', (e) => { state[showKey] = e.target.checked; updateView(); });
+    });
 
     if (els.btnCloseEditor) els.btnCloseEditor.addEventListener('click', () => { document.body.classList.add('editor-closed'); updateView(); });
     if (els.btnOpenEditor) els.btnOpenEditor.addEventListener('click', () => { document.body.classList.remove('editor-closed'); updateView(); });
@@ -611,39 +551,16 @@
             </section>`;
         }
 
-        // Mockups / Galería
+        // Mockups / Galería — dynamic from PHOTO_SLOTS
         let mockupsHTML = '';
         let mockItems = '';
-        if (state.showTrenes && state.fotoTrenes) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoTrenes}" alt="Ploteo full trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes · Full</span></div></div><p class="mockup-caption">Formación completa ploteada</p></div>`;
-        }
-        if (state.showTrenesPyV && state.fotoTrenesPyV) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoTrenesPyV}" alt="Ploteo parcial trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes · Puertas y Ventanas</span></div></div><p class="mockup-caption">Ploteo parcial en puertas y ventanas</p></div>`;
-        }
-        if (state.showTrenesCenefas && state.fotoTrenesCenefas) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoTrenesCenefas}" alt="Cenefas trenes"><div class="mockup-overlay"><span class="mockup-tag">Trenes · Cenefas</span></div></div><p class="mockup-caption">Cenefas interiores en coches</p></div>`;
-        }
-        if (state.showColectivos && state.fotoColectivos) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivos}" alt="Luneta premium"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Luneta</span></div></div><p class="mockup-caption">Luneta premium en unidades</p></div>`;
-        }
-        if (state.showColectivosDif && state.fotoColectivosDif) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosDif}" alt="Diferencial colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Diferencial</span></div></div><p class="mockup-caption">Formato diferencial</p></div>`;
-        }
-        if (state.showColectivosPan && state.fotoColectivosPan) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosPan}" alt="Panorámico colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Panorámico</span></div></div><p class="mockup-caption">Panorámico (ventanas + luneta)</p></div>`;
-        }
-        if (state.showColectivosInt && state.fotoColectivosInt) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoColectivosInt}" alt="Interior colectivos"><div class="mockup-overlay"><span class="mockup-tag">Colectivos · Interior</span></div></div><p class="mockup-caption">Cenefas y publicidad interior</p></div>`;
-        }
-        if (state.showLed && state.fotoLed) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoLed}" alt="Pantallas LED"><div class="mockup-overlay"><span class="mockup-tag">Pantallas LED</span></div></div><p class="mockup-caption">Pantallas digitales en estaciones</p></div>`;
-        }
-        if (state.showTotems && state.fotoTotems) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoTotems}" alt="Tótems UBA"><div class="mockup-overlay"><span class="mockup-tag">Tótems UBA</span></div></div><p class="mockup-caption">Tótems digitales universitarios</p></div>`;
-        }
-        if (state.showOtros && state.fotoOtros) {
-            mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state.fotoOtros}" alt="Otros formatos"><div class="mockup-overlay"><span class="mockup-tag">Otros formatos</span></div></div><p class="mockup-caption">Back full y formatos especiales</p></div>`;
-        }
+        PHOTO_SLOTS.forEach(slot => {
+            const fotoKey = 'foto' + slot.key;
+            const showKey = 'show' + slot.key;
+            if (state[showKey] && state[fotoKey]) {
+                mockItems += `<div class="mockup-item"><div class="mockup-image"><img src="${state[fotoKey]}" alt="${slot.label}"><div class="mockup-overlay"><span class="mockup-tag">${slot.tag}</span></div></div><p class="mockup-caption">${slot.caption}</p></div>`;
+            }
+        });
 
         let num = 2;
         if (state.showFormatos) num++;
