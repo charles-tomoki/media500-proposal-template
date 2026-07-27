@@ -239,7 +239,7 @@
 
     function renderEditorCot() {
         if (state.cotItems.length === 0) {
-            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sin items</td></tr>';
+            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="7">Sin items</td></tr>';
             editorCotTotals.innerHTML = '';
             return;
         }
@@ -252,6 +252,8 @@
                 <tr>
                     <td>${item.cantidad}</td>
                     <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + 'm)</span>' : ''}</td>
+                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="puExh" value="${item.puExh}"></td>
+                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="puProd" value="${item.puProd || 0}"></td>
                     <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalExh" value="${item.totalExh}"></td>
                     <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalProd" value="${item.totalProd || 0}"></td>
                     <td><button class="btn-delete-editor" data-idx="${i}">✕</button></td>
@@ -271,12 +273,18 @@
                 const field = input.dataset.field;
                 const val = parseFloat(input.value) || 0;
                 const item = state.cotItems[idx];
-                if (field === 'totalExh') {
-                    item.puExh = Math.round(val / (item.cantidad * item.meses));
+                if (field === 'puExh') {
+                    item.puExh = val;
+                    item.totalExh = val * item.cantidad * item.meses;
+                } else if (field === 'puProd') {
+                    item.puProd = val;
+                    item.totalProd = val * item.cantidad;
+                } else if (field === 'totalExh') {
                     item.totalExh = val;
+                    item.puExh = Math.round(val / (item.cantidad * item.meses));
                 } else if (field === 'totalProd') {
-                    item.puProd = Math.round(val / item.cantidad);
                     item.totalProd = val;
+                    item.puProd = Math.round(val / item.cantidad);
                 }
                 // Update totals without full re-render (avoids cursor jump)
                 let sumE = 0, sumP = 0;
