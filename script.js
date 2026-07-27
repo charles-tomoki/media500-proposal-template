@@ -237,9 +237,15 @@
     const editorCotBody = document.getElementById('editorCotBody');
     const editorCotTotals = document.getElementById('editorCotTotals');
 
+    function recalcItemTotals(item) {
+        // Recalculate totals from unit prices × quantity × months
+        item.totalExh = item.puExh * item.cantidad * item.meses;
+        item.totalProd = (item.puProd || 0) * item.cantidad;
+    }
+
     function renderEditorCot() {
         if (state.cotItems.length === 0) {
-            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sin items</td></tr>';
+            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="6">Sin items</td></tr>';
             editorCotTotals.innerHTML = '';
             return;
         }
@@ -252,8 +258,9 @@
                 <tr>
                     <td>${item.cantidad}</td>
                     <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + 'm)</span>' : ''}</td>
-                    <td class="num">${formatMoney(item.totalExh)}</td>
-                    <td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td>
+                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalExh" value="${item.totalExh}" step="1000"></td>
+                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalProd" value="${item.totalProd || 0}" step="1000"></td>
+                    <td class="num" style="font-size:0.7rem;color:var(--gray-500);">${formatMoney(item.totalExh)}</td>
                     <td><button class="btn-delete-editor" data-idx="${i}">✕</button></td>
                 </tr>
             `;
@@ -263,6 +270,26 @@
             <div>Total Exhibición: <strong>${formatMoney(sumExh)}</strong></div>
             <div>Total Producción: <strong>${formatMoney(sumProd)}</strong></div>
         `;
+
+        // Attach input change handlers
+        editorCotBody.querySelectorAll('.editor-cot-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const idx = parseInt(e.target.dataset.idx);
+                const field = e.target.dataset.field;
+                const val = parseFloat(e.target.value) || 0;
+                const item = state.cotItems[idx];
+                if (field === 'totalExh') {
+                    // Back-calculate unit price from total
+                    item.puExh = Math.round(val / (item.cantidad * item.meses));
+                    item.totalExh = val;
+                } else if (field === 'totalProd') {
+                    item.puProd = Math.round(val / item.cantidad);
+                    item.totalProd = val;
+                }
+                renderEditorCot();
+                updateView();
+            });
+        });
 
         // Attach delete handlers
         editorCotBody.querySelectorAll('.btn-delete-editor').forEach(btn => {
