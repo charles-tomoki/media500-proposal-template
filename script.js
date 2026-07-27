@@ -237,15 +237,9 @@
     const editorCotBody = document.getElementById('editorCotBody');
     const editorCotTotals = document.getElementById('editorCotTotals');
 
-    function recalcItemTotals(item) {
-        // Recalculate totals from unit prices × quantity × months
-        item.totalExh = item.puExh * item.cantidad * item.meses;
-        item.totalProd = (item.puProd || 0) * item.cantidad;
-    }
-
     function renderEditorCot() {
         if (state.cotItems.length === 0) {
-            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="6">Sin items</td></tr>';
+            editorCotBody.innerHTML = '<tr class="empty-row"><td colspan="5">Sin items</td></tr>';
             editorCotTotals.innerHTML = '';
             return;
         }
@@ -258,9 +252,8 @@
                 <tr>
                     <td>${item.cantidad}</td>
                     <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + 'm)</span>' : ''}</td>
-                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalExh" value="${item.totalExh}" step="1000"></td>
-                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalProd" value="${item.totalProd || 0}" step="1000"></td>
-                    <td class="num" style="font-size:0.7rem;color:var(--gray-500);">${formatMoney(item.totalExh)}</td>
+                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalExh" value="${item.totalExh}"></td>
+                    <td class="num"><input type="number" class="editor-cot-input" data-idx="${i}" data-field="totalProd" value="${item.totalProd || 0}"></td>
                     <td><button class="btn-delete-editor" data-idx="${i}">✕</button></td>
                 </tr>
             `;
@@ -273,20 +266,25 @@
 
         // Attach input change handlers
         editorCotBody.querySelectorAll('.editor-cot-input').forEach(input => {
-            input.addEventListener('change', (e) => {
-                const idx = parseInt(e.target.dataset.idx);
-                const field = e.target.dataset.field;
-                const val = parseFloat(e.target.value) || 0;
+            input.addEventListener('input', () => {
+                const idx = parseInt(input.dataset.idx);
+                const field = input.dataset.field;
+                const val = parseFloat(input.value) || 0;
                 const item = state.cotItems[idx];
                 if (field === 'totalExh') {
-                    // Back-calculate unit price from total
                     item.puExh = Math.round(val / (item.cantidad * item.meses));
                     item.totalExh = val;
                 } else if (field === 'totalProd') {
                     item.puProd = Math.round(val / item.cantidad);
                     item.totalProd = val;
                 }
-                renderEditorCot();
+                // Update totals without full re-render (avoids cursor jump)
+                let sumE = 0, sumP = 0;
+                state.cotItems.forEach(it => { sumE += it.totalExh; sumP += it.totalProd; });
+                editorCotTotals.innerHTML = `
+                    <div>Total Exhibición: <strong>${formatMoney(sumE)}</strong></div>
+                    <div>Total Producción: <strong>${formatMoney(sumP)}</strong></div>
+                `;
                 updateView();
             });
         });
@@ -405,22 +403,15 @@
 
         if (hasCot && view.cotTableBody) {
             let sumExh = 0, sumProd = 0;
-            const editorOpen = !document.body.classList.contains('editor-closed');
-            view.cotTableBody.innerHTML = state.cotItems.map((item, i) => {
+            view.cotTableBody.innerHTML = state.cotItems.map(item => {
                 sumExh += item.totalExh;
                 sumProd += item.totalProd;
-                const puExhCell = editorOpen
-                    ? `<input type="number" class="cot-inline-input" data-idx="${i}" data-field="puExh" value="${item.puExh}" step="1000">`
-                    : formatMoney(item.puExh);
-                const puProdCell = editorOpen
-                    ? `<input type="number" class="cot-inline-input" data-idx="${i}" data-field="puProd" value="${item.puProd || 0}" step="1000">`
-                    : (item.puProd ? formatMoney(item.puProd) : '—');
                 return `
                     <tr>
                         <td>${item.cantidad}</td>
                         <td>${item.formato}${item.meses > 1 ? ' <span style="color:#008fd5">(' + item.meses + ' meses)</span>' : ''}</td>
-                        <td class="num">${puExhCell}</td>
-                        <td class="num">${puProdCell}</td>
+                        <td class="num">${formatMoney(item.puExh)}</td>
+                        <td class="num">${item.puProd ? formatMoney(item.puProd) : '—'}</td>
                         <td class="num">${formatMoney(item.totalExh)}</td>
                         <td class="num">${item.totalProd ? formatMoney(item.totalProd) : '—'}</td>
                     </tr>
@@ -435,26 +426,6 @@
                         <td class="num" style="font-size:1.05rem;color:var(--blue);"><strong>${formatMoney(sumProd)}</strong></td>
                     </tr>
                 `;
-            }
-
-            // Attach inline input handlers (only when editor is open)
-            if (editorOpen) {
-                view.cotTableBody.querySelectorAll('.cot-inline-input').forEach(input => {
-                    input.addEventListener('change', (e) => {
-                        const idx = parseInt(e.target.dataset.idx);
-                        const field = e.target.dataset.field;
-                        const val = parseFloat(e.target.value) || 0;
-                        const item = state.cotItems[idx];
-                        if (field === 'puExh') {
-                            item.puExh = val;
-                            item.totalExh = val * item.cantidad * item.meses;
-                        } else if (field === 'puProd') {
-                            item.puProd = val;
-                            item.totalProd = val * item.cantidad;
-                        }
-                        updateView();
-                    });
-                });
             }
         }
 

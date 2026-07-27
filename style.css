@@ -779,27 +779,6 @@ body:not(.editor-closed) #proposalView {
 }
 .cot-table tfoot td.num { font-size: 1.05rem; color: var(--blue); }
 
-/* Inputs inline editables en tabla de cotización */
-.cot-inline-input {
-    width: 100%;
-    padding: 6px 8px;
-    border: 1.5px solid var(--gray-300);
-    border-radius: 6px;
-    background: var(--white);
-    color: var(--gray-800);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-variant-numeric: tabular-nums;
-    text-align: right;
-    transition: all var(--transition-fast);
-}
-.cot-inline-input:focus {
-    outline: none;
-    border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(0,143,213,0.12);
-}
-.cot-inline-input:hover { border-color: var(--blue); }
-
 /* Editor cotizador */
 .editor-section-title {
     font-family: var(--font-display);
