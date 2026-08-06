@@ -220,6 +220,11 @@
         <div class="editor-actions">
             <button id="btnPreview" class="btn btn-secondary btn-full">👁️ Previsualizar</button>
             <button id="btnExport" class="btn btn-primary btn-full">⬇️ Exportar HTML</button>
+            <button id="btnShareLink" class="btn btn-secondary btn-full">🔗 Generar link</button>
+            <div id="shareLinkBox" style="display:none;margin-top:8px;">
+                <input type="text" id="shareLinkInput" readonly style="width:100%;padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:var(--white);font-size:0.75rem;">
+                <button id="btnCopyLink" class="btn btn-primary btn-full" style="margin-top:6px;font-size:0.8rem;">📋 Copiar link</button>
+            </div>
         </div>
 
         </div><!-- /.editor-col-right -->

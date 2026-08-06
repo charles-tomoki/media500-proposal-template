@@ -516,9 +516,114 @@
         const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `propuesta_${(state.cliente || 'media500').replace(/\s+/g, '_').toLowerCase()}.html`;
+        link.download = `propuesta_${(state.cliente || 'media500').replace(/\\s+/g, '_').toLowerCase()}.html`;
         link.click();
         URL.revokeObjectURL(link.href);
+    });
+
+    // ============================================
+    // SHARE LINK
+    // ============================================
+    const btnShareLink = document.getElementById('btnShareLink');
+    const shareLinkBox = document.getElementById('shareLinkBox');
+    const shareLinkInput = document.getElementById('shareLinkInput');
+    const btnCopyLink = document.getElementById('btnCopyLink');
+
+    function serializeState() {
+        // Serialize state to a JSON-safe object (strip data URLs to keep URL short)
+        const s = {};
+        s.cliente = state.cliente;
+        s.logo = state.logo; // data URL — could be large, but we keep it
+        s.showFormatos = state.showFormatos;
+        s.cotItems = state.cotItems;
+        s.customPrices = state.customPrices;
+
+        // Photos — only save non-null ones
+        s.photos = {};
+        PHOTO_SLOTS.forEach(slot => {
+            const fotoKey = 'foto' + slot.key;
+            const showKey = 'show' + slot.key;
+            if (state[fotoKey]) s.photos[fotoKey] = state[fotoKey];
+            s.photos[showKey] = state[showKey];
+        });
+
+        return s;
+    }
+
+    function deserializeState(s) {
+        if (!s) return;
+        if (s.cliente !== undefined) state.cliente = s.cliente;
+        if (s.logo !== undefined) state.logo = s.logo;
+        if (s.showFormatos !== undefined) state.showFormatos = s.showFormatos;
+        if (s.cotItems) state.cotItems = s.cotItems;
+        if (s.customPrices) state.customPrices = s.customPrices;
+
+        if (s.photos) {
+            Object.keys(s.photos).forEach(k => {
+                state[k] = s.photos[k];
+            });
+        }
+
+        // Update UI
+        if (els.inputCliente) els.inputCliente.value = state.cliente || '';
+        if (els.toggleFormatos) els.toggleFormatos.checked = state.showFormatos;
+        if (state.logo) setPreview(els.previewLogo, state.logo);
+
+        // Update photo previews and toggles
+        PHOTO_SLOTS.forEach(slot => {
+            const fotoKey = 'foto' + slot.key;
+            const showKey = 'show' + slot.key;
+            const previewEl = document.getElementById('preview' + slot.key);
+            const toggleEl = document.getElementById('toggle' + slot.key);
+            if (previewEl && state[fotoKey]) setPreview(previewEl, state[fotoKey]);
+            if (toggleEl) toggleEl.checked = state[showKey] !== false;
+        });
+
+        renderEditorCot();
+        renderFormatoTables();
+        if (state.showFormatos) {
+            editorPreciosGroup.style.display = 'block';
+            renderPreciosEditor();
+        }
+        updateView();
+    }
+
+    function generateShareLink() {
+        const s = serializeState();
+        const json = JSON.stringify(s);
+        // Use btoa with UTF-8 safe encoding
+        const compressed = btoa(unescape(encodeURIComponent(json)));
+        const base = window.location.origin + window.location.pathname;
+        return base + '#data=' + compressed;
+    }
+
+    function loadFromHash() {
+        const hash = window.location.hash;
+        if (!hash.startsWith('#data=')) return false;
+        try {
+            const compressed = hash.slice(6);
+            const json = decodeURIComponent(escape(atob(compressed)));
+            const s = JSON.parse(json);
+            deserializeState(s);
+            return true;
+        } catch (e) {
+            console.error('Failed to load from hash:', e);
+            return false;
+        }
+    }
+
+    if (btnShareLink) btnShareLink.addEventListener('click', () => {
+        const link = generateShareLink();
+        shareLinkInput.value = link;
+        shareLinkBox.style.display = 'block';
+    });
+
+    if (btnCopyLink) btnCopyLink.addEventListener('click', () => {
+        shareLinkInput.select();
+        document.execCommand('copy');
+        // Visual feedback
+        btnCopyLink.textContent = '✅ Copiado!';
+        setTimeout(() => { btnCopyLink.textContent = '📋 Copiar link'; }, 2000);
     });
 
     function buildStandaloneHTML() {
@@ -834,6 +939,12 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
     // ============================================
     // INIT
     // ============================================
+    // Try to load from shared link first
+    const loaded = loadFromHash();
+    if (loaded) {
+        // Close editor by default when loading a shared link
+        document.body.classList.add('editor-closed');
+    }
     renderFormatoTables();
     populateDropdown();
     initParticles();
@@ -940,13 +1051,5 @@ body{font-family:var(--font-body);background:var(--white);color:var(--gray-800);
         });
     }, { threshold: 0.5 });
     document.querySelectorAll('.sc-number[data-count]').forEach(el => counterObserver.observe(el));
-
-    // ============================================
-    // INIT
-    // ============================================
-    renderFormatoTables();
-    populateDropdown();
-    initParticles();
-    updateView();
 
 })();
